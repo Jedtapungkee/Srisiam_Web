@@ -1,0 +1,66 @@
+/* Product Details Swiper Styles */
+
+/* Main Swiper Navigation Buttons */
+.main-swiper .swiper-button-next,
+.main-swiper .swiper-button-prev {
+  background: rgba(255, 255, 255, 0.8);
+  border-radius: 50%;
+  width: 40px !important;
+  height: 40px !important;
+  margin-top: -20px !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+.main-swiper .swiper-button-next:after,
+.main-swiper .swiper-button-prev:after {
+  font-size: 16px !important;
+  font-weight: bold;
+}
+
+/* Thumbnails Swiper Active State */
+.thumbs-swiper .swiper-slide-thumb-active .aspect-square {
+  border-color: #3b82f6 !important;
+  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
+}
+
+/* Thumbnails Swiper Navigation Buttons */
+.thumbs-swiper .swiper-button-next,
+.thumbs-swiper .swiper-button-prev {
+  background: rgba(255, 255, 255, 0.9);
+  border-radius: 50%;
+  width: 30px !important;
+  height: 30px !important;
+  margin-top: -15px !important;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.thumbs-swiper .swiper-button-next:after,
+.thumbs-swiper .swiper-button-prev:after {
+  font-size: 12px !important;
+}
+
+/* Hover Effects */
+.main-swiper .swiper-button-next:hover,
+.main-swiper .swiper-button-prev:hover {
+  background: rgba(255, 255, 255, 0.95);
+  transform: scale(1.05);
+  transition: all 0.2s ease;
+}
+
+.thumbs-swiper .swiper-button-next:hover,
+.thumbs-swiper .swiper-button-prev:hover {
+  background: rgba(255, 255, 255, 1);
+  transform: scale(1.1);
+  transition: all 0.2s ease;
+}
+
+/* Custom Swiper Styles */
+.product-main-swiper {
+  --swiper-navigation-color: #3b82f6;
+  --swiper-navigation-size: 25px;
+}
+
+.product-thumbs-swiper {
+  --swiper-navigation-color: #6b7280;
+  --swiper-navigation-size: 20px;
+}
