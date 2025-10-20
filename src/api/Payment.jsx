@@ -33,3 +33,16 @@ export const createQrCode = async (token, orderId, amount) => {
     }
   );
 };
+
+export const verifySlip = async (token, formData) => {
+  return await axios.post(
+    "http://localhost:5000/api/payment/verify-slip",
+    formData,
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "multipart/form-data",
+      },
+    }
+  );
+};

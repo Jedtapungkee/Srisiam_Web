@@ -20,6 +20,7 @@ import Address from "../pages/Address";
 import Checkout from "../pages/Checkout";
 import Contact from "../pages/Contact";
 import PaymentQRCode from "../pages/payment/PaymentQRCode";
+import PaymentSuccess from "../pages/payment/PaymentSuccess";
 
 const router = createBrowserRouter([
   {
@@ -64,6 +65,9 @@ const router = createBrowserRouter([
       {
         path:"payment/qr-code",
         element:<PaymentQRCode />
+      },{
+        path: "payment/success",
+        element: <PaymentSuccess />
       }
     ],
   },
