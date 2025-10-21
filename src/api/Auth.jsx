@@ -1,8 +1,9 @@
 import axios from "axios";
+import API_BASE_URL from "../config/api";
 
 export const CurrentAdmin = async (token) => {
   return await axios.post(
-    "http://localhost:5000/api/current-admin",
+    `${API_BASE_URL}/api/current-admin`,
     {},
     {
       headers: {

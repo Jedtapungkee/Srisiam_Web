@@ -5,6 +5,7 @@ import { listCategory } from "../api/Category";
 import { listEducationLevels } from "../api/EducationLevel";
 import { listProduct } from "../api/Product";
 import { listAddress,  } from "../api/Address";
+import API_BASE_URL from "../config/api";
 import _ from "lodash";
 
 const SrisiamStore = (set, get) => ({
@@ -111,7 +112,7 @@ const SrisiamStore = (set, get) => ({
     // console.log("clear cart");
   },
   actionLogin: async (formData) => {
-    const res = await axios.post("http://localhost:5000/api/login", formData);
+    const res = await axios.post(`${API_BASE_URL}/api/login`, formData);
     set({ user: res.data.payload, token: res.data.token });
     return res;
   },
@@ -120,7 +121,7 @@ const SrisiamStore = (set, get) => ({
     // ดึง user profile ทันทีเมื่อมี token
     try {
       const res = await axios.get(
-        "http://localhost:5000/api/google/login/success",
+        `${API_BASE_URL}/api/google/login/success`,
         {
           headers: { Authorization: `Bearer ${token}` },
         }

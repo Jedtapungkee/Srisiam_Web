@@ -313,7 +313,7 @@ const TableOrder = () => {
                         
                         <TableCell>
                           <div className="font-semibold text-green-600 text-lg">
-                            {formatPrice(order.cartTotal)}
+                            {formatPrice(order.cartTotal + (order.shippingCost || 0))}
                           </div>
                         </TableCell>
                         

@@ -116,7 +116,7 @@ const RecentOrders = ({ orders, loading }) => {
                   {/* Order Total */}
                   <div className="text-right">
                     <p className="font-bold text-sm">
-                      ฿{order.cartTotal?.toLocaleString()}
+                      ฿{((order.cartTotal || 0) + (order.shippingCost || 0))?.toLocaleString()}
                     </p>
                   </div>
                 </div>

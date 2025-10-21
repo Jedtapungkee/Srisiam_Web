@@ -1,7 +1,8 @@
 import axios from "axios";
+import API_BASE_URL from "../config/api";
 
 export const getOrdersAdmin = async (token) => {
-  return await axios.get("http://localhost:5000/api/admin/orders", {
+  return await axios.get(`${API_BASE_URL}/api/admin/orders`, {
     headers: {
       Authorization: `Bearer ${token}`,
     },
@@ -9,7 +10,7 @@ export const getOrdersAdmin = async (token) => {
 };
 
 export const getListAllUsers = async (token) => {
-  return await axios.get("http://localhost:5000/api/users", {
+  return await axios.get(`${API_BASE_URL}/api/users`, {
     headers: {
       Authorization: `Bearer ${token}`,
     },
@@ -18,7 +19,7 @@ export const getListAllUsers = async (token) => {
 
 export const changeOrderStatus = async (token, orderId, orderStatus) => {
   return await axios.put(
-    "http://localhost:5000/api/admin/order",
+    `${API_BASE_URL}/api/admin/order`,
     {
       orderId,
       orderStatus,
@@ -33,7 +34,7 @@ export const changeOrderStatus = async (token, orderId, orderStatus) => {
 
 export const changeUserStatus = async (token,value) => {
   return await axios.post(
-    "http://localhost:5000/api/change-status",value,
+    `${API_BASE_URL}/api/change-status`,value,
     {
       headers: {
         Authorization: `Bearer ${token}`,
@@ -44,7 +45,7 @@ export const changeUserStatus = async (token,value) => {
 
 export const changeUserRole = async (token,value) => {
   return await axios.post(
-    "http://localhost:5000/api/change-role",value,
+    `${API_BASE_URL}/api/change-role`,value,
     {
       headers: {
         Authorization: `Bearer ${token}`,

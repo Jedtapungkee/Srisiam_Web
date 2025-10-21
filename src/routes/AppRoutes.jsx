@@ -21,6 +21,8 @@ import Checkout from "../pages/Checkout";
 import Contact from "../pages/Contact";
 import PaymentQRCode from "../pages/payment/PaymentQRCode";
 import PaymentSuccess from "../pages/payment/PaymentSuccess";
+import PaymentStripe from "../pages/payment/PaymentStripe";
+import Orderhistory from "../pages/Orderhistory";
 
 const router = createBrowserRouter([
   {
@@ -66,8 +68,14 @@ const router = createBrowserRouter([
         path:"payment/qr-code",
         element:<PaymentQRCode />
       },{
+        path: "payment/credit-card",
+        element: <PaymentStripe />
+      },{
         path: "payment/success",
         element: <PaymentSuccess />
+      },{
+        path: "user/order-history",
+        element: <Orderhistory />
       }
     ],
   },

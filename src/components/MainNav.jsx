@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { use, useState } from "react";
 import { Link } from "react-router-dom";
 import {
   ChevronDown,
@@ -14,6 +14,8 @@ import {
   DropdownMenuContent,
   DropdownMenuGroup,
   DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "./ui/dropdown-menu";
 import useSrisiamStore from "../store/Srisiam-store";
@@ -26,6 +28,8 @@ const MainNav = () => {
     { name: "อุปกรณ์", link: "/shop?category=accessories" },
   ];
   const carts = useSrisiamStore((state) => state.carts);
+  const user = useSrisiamStore((state) => state.user);
+  const logout = useSrisiamStore((state) => state.logout);
   return (
     <nav
       className="text-white shadow-lg relative z-50 overflow-hidden"
@@ -188,24 +192,58 @@ const MainNav = () => {
                 </div>
               </DropdownMenuTrigger>
               <DropdownMenuContent className="w-40 bg-white border border-gray-100 shadow-xl rounded-lg overflow-hidden">
-                <DropdownMenuGroup>
-                  <DropdownMenuItem>
-                    <Link
-                      to="/login"
-                      className="block w-full px-4 py-2 text-gray-700 hover:bg-green-50 hover:text-green-600 transition-colors cursor-pointer"
-                    >
-                      เข้าสู่ระบบ
-                    </Link>
-                  </DropdownMenuItem>
-                  <DropdownMenuItem>
-                    <Link
-                      to="/register"
-                      className="block w-full px-4 py-2 text-gray-700 hover:bg-green-50 hover:text-green-600 transition-colors cursor-pointer"
-                    >
-                      สมัครสมาชิก
-                    </Link>
-                  </DropdownMenuItem>
-                </DropdownMenuGroup>
+                {user ? (
+                  <DropdownMenuGroup>
+                    <DropdownMenuLabel>บัญชีของฉัน</DropdownMenuLabel>
+                    <DropdownMenuItem>
+                      <Link
+                        to="user/profile"
+                        className="block w-full px-4 py-2 text-gray-700 hover:bg-green-50 hover:text-green-600 transition-colors cursor-pointer"
+                      >
+                        โปรไฟล์
+                      </Link>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem>
+                      <Link
+                        to="user/order-history"
+                        className="block w-full px-4 py-2 text-gray-700 hover:bg-green-50 hover:text-green-600 transition-colors cursor-pointer"
+                      >
+                        คำสั่งซื้อ
+                      </Link>
+                    </DropdownMenuItem>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem>
+                      <Link to="/">
+                        <Button
+                          variant="ghost"
+                          className="block w-full text-left text-gray-700 hover:bg-green-50 hover:text-green-600 transition-colors cursor-pointer"
+                          onClick={logout}
+                        >
+                          ออกจากระบบ
+                        </Button>
+                      </Link>
+                    </DropdownMenuItem>
+                  </DropdownMenuGroup>
+                ) : (
+                  <DropdownMenuGroup>
+                    <DropdownMenuItem>
+                      <Link
+                        to="/login"
+                        className="block w-full px-4 py-2 text-gray-700 hover:bg-green-50 hover:text-green-600 transition-colors cursor-pointer"
+                      >
+                        เข้าสู่ระบบ
+                      </Link>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem>
+                      <Link
+                        to="/register"
+                        className="block w-full px-4 py-2 text-gray-700 hover:bg-green-50 hover:text-green-600 transition-colors cursor-pointer"
+                      >
+                        สมัครสมาชิก
+                      </Link>
+                    </DropdownMenuItem>
+                  </DropdownMenuGroup>
+                )}
               </DropdownMenuContent>
             </DropdownMenu>
           </div>

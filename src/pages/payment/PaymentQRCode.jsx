@@ -11,7 +11,8 @@ import FormContainer from "../../components/form/FormContainer";
 import { Input } from "../../components/ui/input";
 import { SubmitButton } from "../../components/form/Buttons";
 import { toast } from "sonner";
-import { Upload } from "lucide-react";
+import { Smartphone, Upload } from "lucide-react";
+import { Button } from "../../components/ui/button";
 
 const PaymentQRCode = () => {
   const [searchParams] = useSearchParams();
@@ -27,7 +28,6 @@ const PaymentQRCode = () => {
   const token = useSrisiamStore((state) => state.token);
   const orderId = searchParams.get("orderId");
   const amount = searchParams.get("amount");
-
 
   useEffect(() => {
     if (orderId && amount) {
@@ -92,9 +92,13 @@ const PaymentQRCode = () => {
         error.response?.status === 400 &&
         error.response?.data?.message?.includes("Payment already exists")
       ) {
-        toast.error("มีการชำระเงินสำหรับคำสั่งซื้อนี้อยู่แล้ว กรุณาตรวจสอบสถานะการชำระเงิน");
+        toast.error(
+          "มีการชำระเงินสำหรับคำสั่งซื้อนี้อยู่แล้ว กรุณาตรวจสอบสถานะการชำระเงิน"
+        );
       } else {
-        toast.error(error.response?.data?.message || "เกิดข้อผิดพลาดในการสร้าง QR Code");
+        toast.error(
+          error.response?.data?.message || "เกิดข้อผิดพลาดในการสร้าง QR Code"
+        );
       }
     } finally {
       setLoading(false);
@@ -169,7 +173,6 @@ const PaymentQRCode = () => {
   };
 
   const handleSubmitProof = async (data) => {
-    
     if (!slipFile) {
       toast.error("กรุณาเลือกไฟล์สลิปการโอนเงิน");
       return;
@@ -195,10 +198,10 @@ const PaymentQRCode = () => {
         // รีเซ็ต input file
         const fileInput = document.querySelector('input[type="file"]');
         if (fileInput) fileInput.value = "";
-        
+
         // แจ้งเตือนความสำเร็จ
         toast.success("แนบสลิปสำเร็จ!");
-        
+
         // อาจจะตรวจสอบสถานะการชำระเงินอีกครั้ง
         checkPaymentStatus();
       } else {
@@ -206,7 +209,9 @@ const PaymentQRCode = () => {
       }
     } catch (error) {
       console.error("Error uploading slip:", error);
-      toast.error(error.response?.data?.message || "เกิดข้อผิดพลาดในการแนบสลิป");
+      toast.error(
+        error.response?.data?.message || "เกิดข้อผิดพลาดในการแนบสลิป"
+      );
     } finally {
       setUploadLoading(false);
     }
@@ -218,12 +223,24 @@ const PaymentQRCode = () => {
           <div className="relative inline-block">
             <div className="animate-spin rounded-full h-20 w-20 border-4 border-blue-200 border-t-blue-900 mx-auto mb-6"></div>
             <div className="absolute inset-0 flex items-center justify-center">
-              <svg className="w-8 h-8 text-blue-900" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+              <svg
+                className="w-8 h-8 text-blue-900"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                />
               </svg>
             </div>
           </div>
-          <h2 className="text-2xl font-bold text-gray-800 mb-2">กำลังสร้าง QR Code</h2>
+          <h2 className="text-2xl font-bold text-gray-800 mb-2">
+            กำลังสร้าง QR Code
+          </h2>
           <p className="text-gray-600">กรุณารอสักครู่...</p>
         </div>
       </div>
@@ -242,8 +259,18 @@ const PaymentQRCode = () => {
               {/* Header with Icon */}
               <div className="text-center mb-8">
                 <div className="inline-block p-3 bg-blue-100 rounded-full mb-4">
-                  <svg className="w-8 h-8 text-blue-900" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  <svg
+                    className="w-8 h-8 text-blue-900"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                    />
                   </svg>
                 </div>
                 <h1 className="text-3xl font-bold text-gray-900 mb-3">
@@ -279,7 +306,7 @@ const PaymentQRCode = () => {
                     onClick={handleCreateNewQR}
                     className="bg-blue-600 text-white px-8 py-3 rounded-lg hover:shadow-lg transform hover:scale-105 transition-all duration-200 font-medium"
                   >
-                   สร้าง QR Code ใหม่
+                    สร้าง QR Code ใหม่
                   </button>
                 </div>
               )}
@@ -302,22 +329,32 @@ const PaymentQRCode = () => {
                   {/* Scan Instruction */}
                   <div className="mb-6 p-4 bg-blue-50 rounded-lg border border-blue-200">
                     <p className="text-blue-900 font-medium flex items-center justify-center gap-2">
-                      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z" />
-                      </svg>
+                      <Smartphone />
                       สแกน QR Code ด้วยแอพธนาคารของคุณ
                     </p>
                   </div>
 
                   {/* Timer with Progress Bar */}
                   <div className="mb-4">
-                    <p className="text-sm text-gray-600 font-medium">เหลือเวลา</p>
+                    <p className="text-sm text-gray-600 font-medium">
+                      เหลือเวลา
+                    </p>
                     <div className="text-gray-700 text-3xl font-bold py-4 px-6">
                       {formatTime(timeLeft)}
                     </div>
                   </div>
                 </div>
               )}
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() => navigate("/checkout")}
+                disabled={loading}
+                isPending={loading}
+                className="items-center justify-center w-full mt-4"
+              >
+                ยกเลิก
+              </Button>
             </div>
           </div>
 
@@ -328,26 +365,37 @@ const PaymentQRCode = () => {
               <div className="mb-6">
                 <div className="flex items-center gap-3 mb-4">
                   <div className="p-2 bg-purple-100 rounded-lg">
-                    <svg className="w-6 h-6 text-purple-900" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                    <svg
+                      className="w-6 h-6 text-purple-900"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                      />
                     </svg>
                   </div>
-                  <h2 className="text-2xl font-bold text-gray-900">แนบหลักฐานการโอนเงิน</h2>
+                  <h2 className="text-2xl font-bold text-gray-900">
+                    แนบหลักฐานการโอนเงิน
+                  </h2>
                 </div>
                 <p className="text-gray-600 text-sm">
                   กรุณาแนบสลิปการโอนเงินเพื่อยืนยันการชำระเงิน
                 </p>
               </div>
 
-
               {/* Upload Form */}
               <FormContainer className="space-y-6" onSubmit={handleSubmitProof}>
                 {/* File Input Area */}
                 <div className="space-y-3">
                   <label className="block text-sm font-semibold text-gray-700">
-                     เลือกไฟล์รูปภาพสลิป (jpg, png)
+                    เลือกไฟล์รูปภาพสลิป (jpg, png)
                   </label>
-                  
+
                   {/* File Input Button */}
                   <div className="relative">
                     <input
@@ -361,11 +409,25 @@ const PaymentQRCode = () => {
                     <label
                       htmlFor="file-upload-input"
                       className={`inline-flex items-center gap-2 px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 cursor-pointer transition-colors
-                        ${(uploadLoading || paymentStatus !== "PENDING") ? 'opacity-50 cursor-not-allowed' : ''}
+                        ${
+                          uploadLoading || paymentStatus !== "PENDING"
+                            ? "opacity-50 cursor-not-allowed"
+                            : ""
+                        }
                       `}
                     >
-                      <svg className="w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                      <svg
+                        className="w-5 h-5 text-gray-500"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                        />
                       </svg>
                       อัพโหลดสลิป
                     </label>
@@ -375,7 +437,7 @@ const PaymentQRCode = () => {
                       </span>
                     )}
                   </div>
-                  
+
                   {/* File Preview */}
                   {slipFile && (
                     <div className="p-4 bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200 rounded-lg">
@@ -383,14 +445,14 @@ const PaymentQRCode = () => {
                         {/* Image Preview */}
                         <div className="flex-shrink-0">
                           <div className="w-20 h-20 bg-white rounded-lg border-2 border-blue-200 flex items-center justify-center overflow-hidden">
-                            <img 
-                              src={URL.createObjectURL(slipFile)} 
-                              alt="Preview" 
+                            <img
+                              src={URL.createObjectURL(slipFile)}
+                              alt="Preview"
                               className="w-full h-full object-cover"
                             />
                           </div>
                         </div>
-                        
+
                         {/* File Info */}
                         <div className="flex-1 min-w-0">
                           <p className="text-sm font-semibold text-gray-900 truncate mb-2">
@@ -398,14 +460,24 @@ const PaymentQRCode = () => {
                           </p>
                           <div className="flex items-center gap-4 text-xs text-gray-600">
                             <span className="flex items-center gap-1">
-                              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
+                              <svg
+                                className="w-4 h-4"
+                                fill="none"
+                                stroke="currentColor"
+                                viewBox="0 0 24 24"
+                              >
+                                <path
+                                  strokeLinecap="round"
+                                  strokeLinejoin="round"
+                                  strokeWidth={2}
+                                  d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"
+                                />
                               </svg>
                               {(slipFile.size / 1024).toFixed(2)} KB
                             </span>
                           </div>
                         </div>
-                        
+
                         {/* Remove Button */}
                         <button
                           type="button"
@@ -414,8 +486,18 @@ const PaymentQRCode = () => {
                           className="flex-shrink-0 p-2 text-red-600 hover:bg-red-100 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                           title="ลบไฟล์"
                         >
-                          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                          <svg
+                            className="w-5 h-5"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={2}
+                              d="M6 18L18 6M6 6l12 12"
+                            />
                           </svg>
                         </button>
                       </div>
@@ -429,7 +511,7 @@ const PaymentQRCode = () => {
                 </div>
 
                 {/* Submit Button */}
-                <SubmitButton 
+                <SubmitButton
                   text={
                     uploadLoading ? (
                       "กำลังอัปโหลด..."
@@ -439,9 +521,11 @@ const PaymentQRCode = () => {
                         แจ้งการโอนเงิน
                       </span>
                     )
-                  } 
+                  }
                   isPending={uploadLoading}
-                  disabled={!slipFile || uploadLoading || paymentStatus !== "PENDING"}
+                  disabled={
+                    !slipFile || uploadLoading || paymentStatus !== "PENDING"
+                  }
                   className="w-full bg-[#00204E] hover:bg-[#003366] transition-colors duration-200 text-white font-medium rounded-lg py-3  "
                 />
               </FormContainer>

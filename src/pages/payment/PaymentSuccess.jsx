@@ -1,8 +1,16 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { CheckCircle, Link } from "lucide-react";
 import { NavLink } from "react-router-dom";
+import useSrisiamStore from "../../store/Srisiam-store";
 
 const PaymentSuccess = () => {
+  const actionClearCart = useSrisiamStore((state) => state.actionClearCart);
+
+  // Clear cart state เมื่อโหลดหน้า (Backend ลบใน DB แล้ว)
+  useEffect(() => {
+    actionClearCart();
+  }, []);
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-100 to-gray-200 py-12 px-4">
       <div className="max-w-2xl mx-auto">
@@ -43,7 +51,7 @@ const PaymentSuccess = () => {
                 กลับหน้าหลัก
               </button>
             </NavLink>
-            <NavLink to="/user/history">
+            <NavLink to="/user/order-history">
               <button
                 className="px-8 py-3 bg-white text-[#00204E] border-2 border-[#00204E] rounded-lg font-semibold hover:bg-gray-50 transform hover:scale-105 transition-all duration-200 shadow-md hover:shadow-lg"
               >

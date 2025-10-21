@@ -5,13 +5,14 @@ import FormInput from "../../components/form/FormInput";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import React from "react";
+import API_BASE_URL from "../../config/api";
 
 const Register = () => {
   const navigate = useNavigate();
 
   const onSubmit = async (data) => {
     try {
-      const res = await axios.post("http://localhost:5000/api/register", data);
+      const res = await axios.post(`${API_BASE_URL}/api/register`, data);
       // console.log(data)
       toast.success(res.data);
       navigate("/login");
@@ -23,7 +24,7 @@ const Register = () => {
   };
 
   const loginGoogle = () => {
-    window.location.href = "http://localhost:5000/api/google";
+    window.location.href = `${API_BASE_URL}/api/google`;
   };
   return (
     <div className="min-h-screen  flex justify-center items-center p-4">

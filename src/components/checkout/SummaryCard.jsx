@@ -13,6 +13,7 @@ import {
 } from "../ui/table";
 import { formatSizeForDisplay } from "../../utils/product";
 import { toast } from "sonner";
+import { SHIPPING_COST } from "../../config/constants";
 
 const SummaryCard = () => {
   const [products, setProducts] = useState([]);
@@ -45,18 +46,13 @@ const SummaryCard = () => {
 
       setIsLoading(true);
 
-      // สร้าง order ใหม่
-      const orderData = {
-        cartTotal: cartTotal + 30, // รวมค่าจัดส่ง
-        paymentMethod: selectedPaymentMethod,
-      };
-
+      // สร้าง order ใหม่ (Backend จะบันทึก shippingCost อัตโนมัติ)
       const orderResponse = await createUserOrder(token);
       // console.log("Order Response:", orderResponse);
 
       if (orderResponse.data.ok) {
         const orderId = orderResponse.data.order.id;
-        const totalAmount = cartTotal + 30; // รวมค่าจัดส่ง
+        const totalAmount = cartTotal + SHIPPING_COST; // รวมค่าจัดส่ง สำหรับส่งไปยัง payment page
 
         // นำทางไปหน้า payment ตาม payment method ที่เลือก
         if (selectedPaymentMethod === "PROMPTPAY") {
@@ -174,12 +170,12 @@ const SummaryCard = () => {
             </div>
             <div className="flex justify-between w-60">
               <span>การจัดส่ง</span>
-              <span>฿30</span>
+              <span>฿{SHIPPING_COST}</span>
             </div>
             <div className="flex justify-between items-center w-full gap-8">
               <div className="flex justify-between w-60 font-semibold text-red-500">
                 <span>ยอดชำระทั้งหมด</span>
-                <span>฿{cartTotal + 30}</span>
+                <span>฿{cartTotal + SHIPPING_COST}</span>
               </div>
               <button
                 onClick={handleOrderSubmit}

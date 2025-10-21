@@ -66,7 +66,9 @@ const OrderProductDialog = ({ order, open, onOpenChange }) => {
                     {order.orderStatus === "Cancelled" && "ยกเลิก"}
                   </Badge>
                 </div>
-                <div><strong>ยอดรวม:</strong> <span className="text-green-600 font-bold text-lg">{formatPrice(order.cartTotal)}</span></div>
+                <div><strong>ยอดรวมสินค้า:</strong> <span className="font-semibold">{formatPrice(order.cartTotal)}</span></div>
+                <div><strong>ค่าจัดส่ง:</strong> <span className="font-semibold">{formatPrice(order.shippingCost || 0)}</span></div>
+                <div><strong>ยอดรวมทั้งหมด:</strong> <span className="text-green-600 font-bold text-lg">{formatPrice(order.cartTotal + (order.shippingCost || 0))}</span></div>
               </div>
             </div>
           </div>
@@ -229,8 +231,11 @@ const OrderProductDialog = ({ order, open, onOpenChange }) => {
                 </div>
               </div>
               <div className="text-right">
+                <div className="text-sm text-gray-600 mb-1">
+                  สินค้า: {formatPrice(order.cartTotal)} | ค่าส่ง: {formatPrice(order.shippingCost || 0)}
+                </div>
                 <div className="text-3xl font-bold text-green-600">
-                  {formatPrice(order.cartTotal)}
+                  {formatPrice(order.cartTotal + (order.shippingCost || 0))}
                 </div>
               </div>
             </div>
