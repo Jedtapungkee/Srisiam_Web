@@ -23,6 +23,7 @@ import PaymentQRCode from "../pages/payment/PaymentQRCode";
 import PaymentSuccess from "../pages/payment/PaymentSuccess";
 import PaymentStripe from "../pages/payment/PaymentStripe";
 import Orderhistory from "../pages/Orderhistory";
+import Chatbot from "../pages/Chatbot";
 
 const router = createBrowserRouter([
   {
@@ -76,6 +77,10 @@ const router = createBrowserRouter([
       },{
         path: "user/order-history",
         element: <Orderhistory />
+      },
+      {
+        path: "/chatbot",
+        element: <Chatbot />
       }
     ],
   },

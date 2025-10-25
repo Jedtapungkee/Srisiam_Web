@@ -169,6 +169,7 @@ const MainNav = () => {
 
             <div className="relative group">
               <div className="absolute -inset-1 bg-white/10 transform -rotate-45 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+              <Link to="/chatbot">
               <Button
                 variant="ghost"
                 size="icon"
@@ -176,6 +177,7 @@ const MainNav = () => {
               >
                 <MessageCircle className="h-5 w-5" />
               </Button>
+              </Link>
             </div>
 
             <DropdownMenu>

@@ -46,13 +46,24 @@ const SummaryCard = () => {
 
       setIsLoading(true);
 
-      // สร้าง order ใหม่ (Backend จะบันทึก shippingCost อัตโนมัติ)
+      // สร้าง/อัปเดต order (Backend จะบันทึก shippingCost อัตโนมัติ)
       const orderResponse = await createUserOrder(token);
-      // console.log("Order Response:", orderResponse);
 
       if (orderResponse.data.ok) {
         const orderId = orderResponse.data.order.id;
         const totalAmount = cartTotal + SHIPPING_COST; // รวมค่าจัดส่ง สำหรับส่งไปยัง payment page
+        const isUpdate = orderResponse.data.isUpdate;
+
+        // แสดง toast ตามว่าเป็นการสร้างใหม่หรืออัปเดต
+        if (isUpdate) {
+          toast.success("อัปเดตคำสั่งซื้อสำเร็จ", {
+            description: "กำลังนำคุณไปยังหน้าชำระเงิน"
+          });
+        } else {
+          toast.success("สร้างคำสั่งซื้อสำเร็จ", {
+            description: "กำลังนำคุณไปยังหน้าชำระเงิน"
+          });
+        }
 
         // นำทางไปหน้า payment ตาม payment method ที่เลือก
         if (selectedPaymentMethod === "PROMPTPAY") {

@@ -2,14 +2,24 @@ import React, { useEffect } from "react";
 import { CheckCircle, Link } from "lucide-react";
 import { NavLink } from "react-router-dom";
 import useSrisiamStore from "../../store/Srisiam-store";
+import { listUserOrders } from "../../api/User";
 
 const PaymentSuccess = () => {
   const actionClearCart = useSrisiamStore((state) => state.actionClearCart);
 
-  // Clear cart state เมื่อโหลดหน้า (Backend ลบใน DB แล้ว)
+  // Clear cart state เมื่อโหลดหน้า 
   useEffect(() => {
     actionClearCart();
+    fetchUserOrders();
   }, []);
+
+  const fetchUserOrders = async()=>{
+    try {
+      const res = await listUserOrders()
+    } catch (error) {
+      console.error("Error fetching orders:", error);
+    }
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-100 to-gray-200 py-12 px-4">

@@ -118,6 +118,9 @@ const PaymentQRCode = () => {
         setPaymentStatus(status);
 
         if (status === "COMPLETED") {
+          toast.success("ชำระเงินสำเร็จ!", {
+            description: "กำลังนำคุณไปยังหน้าสรุปการชำระเงิน"
+          });
           navigate("/payment/success");
         } else if (status === "EXPIRED") {
           setTimeLeft(0);
@@ -200,10 +203,14 @@ const PaymentQRCode = () => {
         if (fileInput) fileInput.value = "";
 
         // แจ้งเตือนความสำเร็จ
-        toast.success("แนบสลิปสำเร็จ!");
+        toast.success("แนบสลิปสำเร็จ!", {
+          description: "ระบบกำลังตรวจสอบการชำระเงิน"
+        });
 
-        // อาจจะตรวจสอบสถานะการชำระเงินอีกครั้ง
-        checkPaymentStatus();
+        // ตรวจสอบสถานะการชำระเงินอีกครั้งทันที
+        setTimeout(() => {
+          checkPaymentStatus();
+        }, 2000); // รอ 2 วินาทีเพื่อให้ backend ประมวลผลเสร็จ
       } else {
         toast.error(response.data.message || "ไม่สามารถแนบสลิปได้");
       }

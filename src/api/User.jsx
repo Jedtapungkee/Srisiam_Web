@@ -35,3 +35,11 @@ export const listUserOrders = async(token) => {
     }
   })
 }
+
+export const cancelUserOrder = async(token, orderId) => {
+  return await axios.patch(`${API_BASE_URL}/api/user/order/${orderId}/cancel`, {}, {
+    headers: {
+      Authorization: `Bearer ${token}`
+    }
+  })
+}

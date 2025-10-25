@@ -1,12 +1,26 @@
 // ฟังก์ชันสำหรับจัดการข้อมูลผู้ใช้
 
-
-export const formatDate = (dateString) => {
-  return new Date(dateString).toLocaleDateString('th-TH', {
+/**
+ * จัดรูปแบบวันที่ให้อยู่ในรูปแบบภาษาไทย
+ * @param {string} dateString - วันที่ในรูปแบบ ISO string
+ * @param {boolean} includeTime - แสดงเวลาด้วยหรือไม่ (default: false)
+ * @returns {string} วันที่ที่จัดรูปแบบแล้ว
+ */
+export const formatDate = (dateString, includeTime = false) => {
+  const options = {
     year: 'numeric',
     month: 'short',
     day: 'numeric',
-  });
+    timeZone: 'Asia/Bangkok', // บังคับให้ใช้เวลาไทย
+  };
+  
+  if (includeTime) {
+    options.hour = '2-digit';
+    options.minute = '2-digit';
+    options.hour12 = false; // ใช้รูปแบบ 24 ชั่วโมง
+  }
+  
+  return new Date(dateString).toLocaleDateString('th-TH', options);
 };
 
 /**

@@ -38,12 +38,20 @@ const RecentOrders = ({ orders, loading }) => {
 
   const formatDate = (dateString) => {
     try {
+      // แปลง string เป็น Date object โดยถือว่าเป็น UTC แล้วแปลงเป็นเวลาท้องถิ่น
       const date = new Date(dateString);
+      
+      // ตรวจสอบว่าวันที่ valid หรือไม่
+      if (isNaN(date.getTime())) {
+        return { relative: 'ไม่ทราบ', absolute: 'ไม่ทราบ' };
+      }
+      
       return {
         relative: formatDistanceToNow(date, { addSuffix: true, locale: th }),
         absolute: format(date, 'dd MMM yyyy, HH:mm', { locale: th })
       };
     } catch (error) {
+      console.error('Error formatting date:', error);
       return { relative: 'ไม่ทราบ', absolute: 'ไม่ทราบ' };
     }
   };
