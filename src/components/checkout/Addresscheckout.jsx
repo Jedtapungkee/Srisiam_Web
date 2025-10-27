@@ -4,7 +4,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "../ui/dialog";
 import DialogForm from "../address/DialogForm";
 import useSrisiamStore from "../../store/Srisiam-store";
 
-const Addresscheckout = () => {
+const Addresscheckout = ({ onAddressSelect }) => {
   const addresses = useSrisiamStore((state) => state.addresses);
   const getAddresses = useSrisiamStore((state) => state.getAddresses);
   const [addressDialogOpen, setAddressDialogOpen] = useState(false);
@@ -17,6 +17,10 @@ const Addresscheckout = () => {
   useEffect(() => {
     const defaultAddr = getDisplayAddress();
     setSelectedAddress(defaultAddr);
+    // ส่ง address ที่เลือกกลับไปให้ parent
+    if (defaultAddr && onAddressSelect) {
+      onAddressSelect(defaultAddr);
+    }
   }, [addresses]);
 
   // Find default address or use the first one if no default is set
@@ -40,6 +44,10 @@ const Addresscheckout = () => {
   const handleAddressSelect = (address) => {
     setSelectedAddress(address);
     setAddressDialogOpen(false);
+    // ส่ง address ที่เลือกกลับไปให้ parent
+    if (onAddressSelect) {
+      onAddressSelect(address);
+    }
   };
 
   const displayAddress = selectedAddress || getDisplayAddress();

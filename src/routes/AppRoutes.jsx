@@ -5,6 +5,9 @@ import Home from "../pages/Home";
 import Shop from "../pages/Shop";
 import Login from "../pages/auth/Login";
 import Register from "../pages/auth/Register";
+import ForgotPassword from "../pages/auth/ForgotPassword";
+import VerifyOtp from "../pages/auth/VerifyOtp";
+import ResetPassword from "../pages/auth/ResetPassword";
 import LayoutAdmin from "../layouts/LayoutAdmin";
 import Dashboard from "../pages/admin/Dashboard";
 import AuthCallback from "../pages/auth/authCallback";
@@ -22,10 +25,39 @@ import Contact from "../pages/Contact";
 import PaymentQRCode from "../pages/payment/PaymentQRCode";
 import PaymentSuccess from "../pages/payment/PaymentSuccess";
 import PaymentStripe from "../pages/payment/PaymentStripe";
-import Orderhistory from "../pages/Orderhistory";
+import Orderhistory from "../pages/user/Orderhistory";
 import Chatbot from "../pages/Chatbot";
+import Profile from "../pages/user/Profile";
+import LayoutAuth from "../layouts/LayoutAuth";
 
 const router = createBrowserRouter([
+  // Auth routes
+  {
+    path: "/auth",
+    element: <LayoutAuth />,
+    children: [
+      {
+        path: "login",
+        element: <Login />,
+      },
+      {
+        path: "register",
+        element: <Register />,
+      },
+      {
+        path: "forgot-password",
+        element: <ForgotPassword />,
+      },
+      {
+        path: "verify-otp",
+        element: <VerifyOtp />,
+      },
+      {
+        path: "reset-password",
+        element: <ResetPassword />,
+      },
+    ],
+  },
   {
     path: "/",
     element: <Layout />,
@@ -37,14 +69,6 @@ const router = createBrowserRouter([
       {
         path: "shop",
         element: <Shop />,
-      },
-      {
-        path: "login",
-        element: <Login />,
-      },
-      {
-        path: "register",
-        element: <Register />,
       },
       {
         path: "product/:id",
@@ -81,6 +105,9 @@ const router = createBrowserRouter([
       {
         path: "/chatbot",
         element: <Chatbot />
+      },{
+        path: "user/profile",
+        element: <Profile />
       }
     ],
   },

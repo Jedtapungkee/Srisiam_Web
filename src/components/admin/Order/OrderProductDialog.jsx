@@ -5,10 +5,24 @@ import {
   ShoppingBag, 
   Package, 
   Tag,
-  ShoppingCart 
+  ShoppingCart,
+  CreditCard,
+  Wallet,
+  Banknote,
+  HandCoins
 } from "lucide-react";
 
 const OrderProductDialog = ({ order, open, onOpenChange }) => {
+  // Debug: แสดงข้อมูล order ที่ได้รับ
+  React.useEffect(() => {
+    if (order && open) {
+      console.log('📦 Order Data:', order);
+      console.log('👤 OrderedBy:', order.orderedBy);
+      console.log('📍 Address:', order.address);
+      console.log('💳 Payment:', order.payment);
+    }
+  }, [order, open]);
+
   const formatPrice = (price) => {
     return new Intl.NumberFormat('th-TH', {
       style: 'currency',
@@ -20,10 +34,51 @@ const OrderProductDialog = ({ order, open, onOpenChange }) => {
     return products?.reduce((total, product) => total + product.count, 0) || 0;
   };
 
+  // แปลงชื่อ Payment Method เป็นภาษาไทย
+  const getPaymentMethodLabel = (method) => {
+    const labels = {
+      PROMPTPAY: 'พร้อมเพย์ (QR Code)',
+      STRIPE: 'บัตรเครดิต/เดบิต (Stripe)',
+      BANK_TRANSFER: 'โอนเงินผ่านธนาคาร',
+      CASH_ON_DELIVERY: 'เก็บเงินปลายทาง (COD)'
+    };
+    return labels[method] || method;
+  };
+
+  // แสดงไอคอนตาม Payment Method
+  const getPaymentMethodIcon = (method) => {
+    switch (method) {
+      case 'PROMPTPAY':
+        return <Wallet className="h-4 w-4" />;
+      case 'STRIPE':
+        return <CreditCard className="h-4 w-4" />;
+      case 'BANK_TRANSFER':
+        return <Banknote className="h-4 w-4" />;
+      case 'CASH_ON_DELIVERY':
+        return <HandCoins className="h-4 w-4" />;
+      default:
+        return <CreditCard className="h-4 w-4" />;
+    }
+  };
+
+  // แปลงชื่อ Payment Status เป็นภาษาไทยและสี
+  const getPaymentStatusInfo = (status) => {
+    const statusInfo = {
+      PENDING: { label: 'รอชำระเงิน', color: 'bg-yellow-100 text-yellow-800 border-yellow-300' },
+      VERIFYING: { label: 'กำลังตรวจสอบ', color: 'bg-blue-100 text-blue-800 border-blue-300' },
+      COMPLETED: { label: 'ชำระเงินสำเร็จ', color: 'bg-green-100 text-green-800 border-green-300' },
+      FAILED: { label: 'ชำระเงินล้มเหลว', color: 'bg-red-100 text-red-800 border-red-300' },
+      EXPIRED: { label: 'หมดอายุ', color: 'bg-gray-100 text-gray-800 border-gray-300' },
+      REFUNDED: { label: 'คืนเงินแล้ว', color: 'bg-purple-100 text-purple-800 border-purple-300' },
+      CANCELLED: { label: 'ยกเลิก', color: 'bg-gray-100 text-gray-800 border-gray-300' }
+    };
+    return statusInfo[status] || { label: status, color: 'bg-gray-100 text-gray-800 border-gray-300' };
+  };
+
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       
-      <DialogContent className="max-w-[95vw] w-full max-h-[90vh] overflow-y-auto">
+      <DialogContent className="!max-w-[90vw] w-full max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2 text-2xl">
             <ShoppingBag className="h-7 w-7 text-blue-600" />
@@ -34,10 +89,31 @@ const OrderProductDialog = ({ order, open, onOpenChange }) => {
             <div className="bg-blue-50 rounded-lg p-4 border border-blue-200">
               <h4 className="font-semibold text-blue-800 mb-2">ข้อมูลลูกค้า</h4>
               <div className="space-y-1 text-gray-700">
-                <div><strong>ชื่อ:</strong> {order.orderedBy?.firstName} {order.orderedBy?.lastName}</div>
-                <div><strong>อีเมล:</strong> {order.orderedBy?.email}</div>
-                <div><strong>เบอร์โทร:</strong> {order.orderedBy?.phone || 'ไม่ระบุ'}</div>
-                <div><strong>ที่อยู่:</strong> {order.orderedBy?.address || 'ไม่ระบุ'}</div>
+                <div>
+                  <strong>ชื่อ:</strong> {order.orderedBy?.firstName || ''} {order.orderedBy?.lastName || ''}
+                </div>
+                <div>
+                  <strong>อีเมล:</strong> {order.orderedBy?.email || 'ไม่ระบุ'}
+                </div>
+                <div>
+                  <strong>เบอร์โทร:</strong> {order.orderedBy?.phoneNumber || order.orderedBy?.phone || 'ไม่ระบุ'}
+                </div>
+                <div>
+                  <strong>ที่อยู่จัดส่ง:</strong>{' '}
+                  {order.address ? (
+                    <>
+                      {order.address.recipientFirstName} {order.address.recipientLastName}<br/>
+                      {order.address.village && `${order.address.village} `}
+                      {order.address.subDistrict && `ต.${order.address.subDistrict} `}
+                      {order.address.district && `อ.${order.address.district} `}
+                      {order.address.province && `จ.${order.address.province} `}
+                      {order.address.zipCode && `${order.address.zipCode}`}
+                      {order.address.phoneNumber && <><br/>โทร: {order.address.phoneNumber}</>}
+                    </>
+                  ) : (
+                    'ไม่ระบุ'
+                  )}
+                </div>
               </div>
             </div>
             
@@ -70,6 +146,74 @@ const OrderProductDialog = ({ order, open, onOpenChange }) => {
                 <div><strong>ค่าจัดส่ง:</strong> <span className="font-semibold">{formatPrice(order.shippingCost || 0)}</span></div>
                 <div><strong>ยอดรวมทั้งหมด:</strong> <span className="text-green-600 font-bold text-lg">{formatPrice(order.cartTotal + (order.shippingCost || 0))}</span></div>
               </div>
+            </div>
+
+            {/* Payment Info */}
+            <div className="bg-purple-50 rounded-lg p-4 border border-purple-200 md:col-span-2">
+              <h4 className="font-semibold text-purple-800 mb-2">ข้อมูลการชำระเงิน</h4>
+              {order.payment ? (
+                <div className="space-y-2 text-gray-700">
+                  <div className="flex items-center gap-2">
+                    <strong>วิธีชำระเงิน:</strong>
+                    <Badge variant="outline" className="flex items-center gap-1">
+                      {getPaymentMethodIcon(order.payment.method)}
+                      {getPaymentMethodLabel(order.payment.method)}
+                    </Badge>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <strong>สถานะการชำระเงิน:</strong>
+                    <Badge className={getPaymentStatusInfo(order.payment.status).color}>
+                      {getPaymentStatusInfo(order.payment.status).label}
+                    </Badge>
+                  </div>
+                  {order.payment.paidAt && (
+                    <div>
+                      <strong>ชำระเงินเมื่อ:</strong> {new Date(order.payment.paidAt).toLocaleDateString('th-TH', {
+                        year: 'numeric',
+                        month: 'long',
+                        day: 'numeric',
+                        hour: '2-digit',
+                        minute: '2-digit'
+                      })}
+                    </div>
+                  )}
+                  {order.payment.transactionRef && (
+                    <div>
+                      <strong>หมายเลขอ้างอิง:</strong> <code className="bg-gray-100 px-2 py-1 rounded text-sm">{order.payment.transactionRef}</code>
+                    </div>
+                  )}
+                  {order.payment.method === 'BANK_TRANSFER' && order.payment.slipImageUrl && (
+                    <div>
+                      <strong>สลิปการโอนเงิน:</strong>{' '}
+                      <a 
+                        href={order.payment.slipImageUrl} 
+                        target="_blank" 
+                        rel="noopener noreferrer"
+                        className="text-blue-600 hover:underline"
+                      >
+                        ดูสลิป
+                      </a>
+                    </div>
+                  )}
+                  {order.payment.method === 'PROMPTPAY' && order.payment.qrImageUrl && (
+                    <div>
+                      <strong>QR Code:</strong>{' '}
+                      <a 
+                        href={order.payment.qrImageUrl} 
+                        target="_blank" 
+                        rel="noopener noreferrer"
+                        className="text-blue-600 hover:underline"
+                      >
+                        ดู QR Code
+                      </a>
+                    </div>
+                  )}
+                </div>
+              ) : (
+                <div className="text-gray-500">
+                  ยังไม่มีข้อมูลการชำระเงิน
+                </div>
+              )}
             </div>
           </div>
         </DialogHeader>

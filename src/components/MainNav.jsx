@@ -1,14 +1,13 @@
-import React, { use, useState } from "react";
-import { Link } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import {
   ChevronDown,
-  Search,
   ShoppingCart,
   MessageCircle,
   User,
 } from "lucide-react";
 import { Button } from "./ui/button";
-import { Input } from "./ui/input";
+import SearchBar from "./search/SearchBar";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -19,17 +18,55 @@ import {
   DropdownMenuTrigger,
 } from "./ui/dropdown-menu";
 import useSrisiamStore from "../store/Srisiam-store";
+import { listCategory } from "../api/Category";
 
 const MainNav = () => {
-  const productCategories = [
-    { name: "เสื้อนักเรียน", link: "/shop?category=shirt" },
-    { name: "กระโปรง/กางเกง", link: "/shop?category=bottom" },
-    { name: "รองเท้า", link: "/shop?category=shoes" },
-    { name: "อุปกรณ์", link: "/shop?category=accessories" },
-  ];
+  const navigate = useNavigate();
+  const [categories, setCategories] = useState([]);
+  const [searchQuery, setSearchQuery] = useState("");
+  
   const carts = useSrisiamStore((state) => state.carts);
   const user = useSrisiamStore((state) => state.user);
   const logout = useSrisiamStore((state) => state.logout);
+
+  /**
+   * Fetch categories from API
+   */
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const response = await listCategory();
+        setCategories(response.data);
+      } catch (error) {
+        console.error('Error fetching categories:', error);
+      }
+    };
+
+    fetchCategories();
+  }, []);
+
+  /**
+   * Handle search submission
+   */
+  const handleSearch = (query) => {
+    if (query.trim()) {
+      navigate(`/shop?search=${encodeURIComponent(query)}`);
+    }
+  };
+
+  /**
+   * Handle search clear
+   */
+  const handleClearSearch = () => {
+    setSearchQuery("");
+  };
+
+  /**
+   * Handle category click
+   */
+  const handleCategoryClick = (categoryId) => {
+    navigate(`/shop?category=${categoryId}`);
+  };
   return (
     <nav
       className="text-white shadow-lg relative z-50 overflow-hidden"
@@ -95,16 +132,34 @@ const MainNav = () => {
                 </div>
               </DropdownMenuTrigger>
               <DropdownMenuContent className="w-48 bg-white border border-gray-100 shadow-xl rounded-lg overflow-hidden">
-                {productCategories.map((category, index) => (
-                  <DropdownMenuItem key={index} asChild>
-                    <Link
-                      to={category.link}
-                      className="block w-full px-4 py-2 text-gray-700 hover:bg-blue-50 hover:text-blue-600 transition-colors cursor-pointer"
+                <DropdownMenuLabel className="text-xs text-gray-500 uppercase">
+                  หมวดหมู่สินค้า
+                </DropdownMenuLabel>
+                <DropdownMenuSeparator />
+                {categories.length > 0 ? (
+                  categories.map((category) => (
+                    <DropdownMenuItem 
+                      key={category.id}
+                      onClick={() => handleCategoryClick(category.id)}
+                      className="cursor-pointer hover:bg-blue-50 hover:text-blue-600 transition-colors"
                     >
                       {category.name}
-                    </Link>
+                    </DropdownMenuItem>
+                  ))
+                ) : (
+                  <DropdownMenuItem disabled>
+                    <span className="text-gray-400">กำลังโหลด...</span>
                   </DropdownMenuItem>
-                ))}
+                )}
+                <DropdownMenuSeparator />
+                <DropdownMenuItem asChild>
+                  <Link
+                    to="/shop"
+                    className="block w-full px-4 py-2 text-[#001F3F] font-medium hover:bg-blue-50 transition-colors cursor-pointer"
+                  >
+                    ดูสินค้าทั้งหมด
+                  </Link>
+                </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
 
@@ -139,15 +194,14 @@ const MainNav = () => {
           <div className="flex items-center space-x-3">
             {/* Search Bar with Angular Border */}
             <div className="hidden lg:flex items-center">
-              <div className="relative group">
-                <div className="absolute -inset-1 bg-gradient-to-r from-white/20 to-white/10 transform -skew-x-12 rounded-full opacity-60 group-focus-within:opacity-100 transition-opacity duration-300"></div>
-                <Input
-                  type="text"
-                  placeholder="Search"
-                  className="relative bg-white/20 text-white placeholder:text-blue-200 border-white/30 rounded-full px-4 py-2 pr-10 focus:bg-white focus:text-gray-900 focus:placeholder:text-gray-500 transition-all duration-200"
-                />
-                <Search className="absolute right-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-blue-200 z-10" />
-              </div>
+              <SearchBar
+                value={searchQuery}
+                onChange={setSearchQuery}
+                onSearch={handleSearch}
+                onClear={handleClearSearch}
+                placeholder="ค้นหาสินค้า..."
+                variant="navbar"
+              />
             </div>
 
             {/* Angular Icon Buttons */}
@@ -230,7 +284,7 @@ const MainNav = () => {
                   <DropdownMenuGroup>
                     <DropdownMenuItem>
                       <Link
-                        to="/login"
+                        to="/auth/login"
                         className="block w-full px-4 py-2 text-gray-700 hover:bg-green-50 hover:text-green-600 transition-colors cursor-pointer"
                       >
                         เข้าสู่ระบบ
@@ -238,7 +292,7 @@ const MainNav = () => {
                     </DropdownMenuItem>
                     <DropdownMenuItem>
                       <Link
-                        to="/register"
+                        to="/auth/register"
                         className="block w-full px-4 py-2 text-gray-700 hover:bg-green-50 hover:text-green-600 transition-colors cursor-pointer"
                       >
                         สมัครสมาชิก

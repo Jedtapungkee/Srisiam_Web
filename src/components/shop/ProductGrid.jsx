@@ -79,50 +79,6 @@ const ProductGrid = ({
 
   return (
     <div className={`space-y-6 ${className}`}>
-      {/* Grid Header */}
-      <Card className="shadow-sm border-0 bg-white">
-        <CardContent className="p-4">
-          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center space-y-4 sm:space-y-0">
-            {/* Results Info */}
-            <div className="flex items-center space-x-4">
-              <div className="flex items-center space-x-2">
-                <Package className="w-5 h-5 text-blue-500" />
-                <span className="font-semibold text-gray-800">
-                  พบสินค้า {totalCount.toLocaleString()} รายการ
-                </span>
-              </div>
-              {currentPage > 1 && (
-                <Badge variant="outline" className="text-blue-600 border-blue-200">
-                  หน้า {currentPage} จาก {totalPages}
-                </Badge>
-              )}
-            </div>
-
-            {/* Controls */}
-            <div className="flex items-center space-x-3">
-              
-
-              {/* Sort Options */}
-              <div className="flex items-center space-x-2">
-                <ArrowUpDown className="w-4 h-4 text-gray-500" />
-                <Select value={sortBy} onValueChange={onSortChange}>
-                  <SelectTrigger className="w-[180px]">
-                    <SelectValue placeholder="เรียงตาม" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {sortOptions.map((option) => (
-                      <SelectItem key={option.value} value={option.value}>
-                        {option.label}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
-
       {/* Products Grid/List */}
       {isLoading ? (
         <div className={`grid gap-6 ${

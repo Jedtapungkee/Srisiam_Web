@@ -1,277 +1,355 @@
-import React, { useState, useEffect, useCallback } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
-import ShopHeader from '../components/Shop/ShopHeader';
-import ShopFilter from '../components/Shop/ShopFilter';
+import React, { useState, useEffect } from 'react';
+import { useLocation, useNavigate, useSearchParams } from 'react-router-dom';
+import { Filter, X, Grid, List } from 'lucide-react';
+import { Button } from '../components/ui/button';
+import SearchBar from '../components/search/SearchBar';
+import CategoryFilter from '../components/search/CategoryFilter';
+import PriceRangeFilter from '../components/search/PriceRangeFilter';
 import ProductGrid from '../components/Shop/ProductGrid';
+import useProductSearch from '../hooks/useProductSearch';
 import useSrisiamStore from '../store/Srisiam-store';
-import { SearchFilters, listProductBy } from '../api/Product';
+import { cn } from '../lib/utils';
 
+/**
+ * Shop Page Component
+ * Main shop page with search, filter, and product display functionality
+ */
 const Shop = () => {
   const location = useLocation();
   const navigate = useNavigate();
+  const [searchParams, setSearchParams] = useSearchParams();
   
-  // Zustand Store
-  const { products, getProduct } = useSrisiamStore();
+  // Zustand Store - For all products
+  const { products: allProducts, getProduct } = useSrisiamStore();
+  
+  // Product Search Hook - For filtered products
+  const {
+    products: filteredProducts,
+    isLoading,
+    error,
+    filters,
+    searchProducts,
+    setSearchQuery,
+    setPriceRange,
+    setCategoryFilter,
+    clearFilters,
+    hasActiveFilters,
+    resultsCount,
+  } = useProductSearch();
 
-  // console.log('Products from store:', products);
-  
-  // Local State
-  const [filteredProducts, setFilteredProducts] = useState([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState(null);
+  // UI States
   const [isFilterOpen, setIsFilterOpen] = useState(false);
-  
-  // Filter & Search States
-  const [searchQuery, setSearchQuery] = useState('');
-  const [activeFilters, setActiveFilters] = useState({
-    categories: [],
-    educationLevels: [],
-    sizes: [],
-    priceRange: [0, 5000],
-    search: ''
-  });
-  
-  // View & Sort States
   const [viewMode, setViewMode] = useState('grid');
   const [sortBy, setSortBy] = useState('newest');
-  const [currentPage, setCurrentPage] = useState(1);
-  const [totalCount, setTotalCount] = useState(0);
-  const [totalPages, setTotalPages] = useState(1);
 
-  // URL Parameters handling
+  /**
+   * Load all products on mount
+   */
   useEffect(() => {
-    const params = new URLSearchParams(location.search);
-    const category = params.get('category');
-    const search = params.get('search');
-    
-    if (category) {
-      setActiveFilters(prev => ({
-        ...prev,
-        categories: [category]
-      }));
-    }
-    
-    if (search) {
-      setSearchQuery(search);
-      setActiveFilters(prev => ({
-        ...prev,
-        search: search
-      }));
-    }
-  }, [location.search]);
-
-  // Apply filters to products from store
-  const applyFilters = useCallback((filters = activeFilters, sort = sortBy) => {
-    if (!products || products.length === 0) {
-      setFilteredProducts([]);
-      return;
-    }
-
-    let filtered = [...products];
-
-    // Apply search filter
-    if (filters.search) {
-      const searchTerm = filters.search.toLowerCase();
-      filtered = filtered.filter(product => 
-        product.title?.toLowerCase().includes(searchTerm) ||
-        product.description?.toLowerCase().includes(searchTerm)
-      );
-    }
-
-    // Apply category filter
-    if (filters.categories && filters.categories.length > 0) {
-      filtered = filtered.filter(product => 
-        product.category && filters.categories.includes(product.category.id)
-      );
-    }
-
-    // Apply education level filter
-    if (filters.educationLevels && filters.educationLevels.length > 0) {
-      filtered = filtered.filter(product => 
-        product.educationLevel && filters.educationLevels.includes(product.educationLevel.id)
-      );
-    }
-
-    // Apply price filter
-    if (filters.priceRange && filters.priceRange.length === 2) {
-      filtered = filtered.filter(product => {
-        // Get price from productSizes or fallback to product.price
-        let price = 0;
-        if (product.productsizes && product.productsizes.length > 0) {
-          const prices = product.productsizes.map(size => parseFloat(size.price)).filter(p => !isNaN(p));
-          price = prices.length > 0 ? Math.min(...prices) : 0;
-        } else {
-          price = parseFloat(product.price) || 0;
-        }
-        return price >= filters.priceRange[0] && price <= filters.priceRange[1];
-      });
-    }
-
-    // Apply sorting
-    filtered.sort((a, b) => {
-      switch (sort) {
-        case 'price-low':
-          const priceA = parseFloat(a.price) || 0;
-          const priceB = parseFloat(b.price) || 0;
-          return priceA - priceB;
-        case 'price-high':
-          const priceA2 = parseFloat(a.price) || 0;
-          const priceB2 = parseFloat(b.price) || 0;
-          return priceB2 - priceA2;
-        case 'name-asc':
-          return (a.title || '').localeCompare(b.title || '');
-        case 'name-desc':
-          return (b.title || '').localeCompare(a.title || '');
-        case 'oldest':
-          return new Date(a.createdAt) - new Date(b.createdAt);
-        case 'newest':
-        default:
-          return new Date(b.createdAt) - new Date(a.createdAt);
-      }
-    });
-
-    setFilteredProducts(filtered);
-    setTotalCount(filtered.length);
-    setTotalPages(Math.ceil(filtered.length / 12));
-  }, [products, activeFilters, sortBy]);
-
-  // Initial load - load products from store
-  useEffect(() => {
-    const loadProducts = async () => {
-      setIsLoading(true);
-      try {
-        await getProduct(100); // Load products from API to store
-      } catch (error) {
-        console.error('Error loading products:', error);
-        setError('ไม่สามารถโหลดสินค้าได้');
-      } finally {
-        setIsLoading(false);
-      }
-    };
-    
-    loadProducts();
+    getProduct();
   }, [getProduct]);
 
-  // Update filtered products when store products change
+  /**
+   * Handle URL parameters (for category and search from navbar)
+   */
   useEffect(() => {
-    if (products && products.length > 0) {
-      setError(null);
-      applyFilters(activeFilters, sortBy);
-    } else if (products && products.length === 0) {
-      setFilteredProducts([]);
-      setTotalCount(0);
-      setTotalPages(1);
+    const categoryParam = searchParams.get('category');
+    const searchParam = searchParams.get('search');
+
+    if (categoryParam) {
+      // Set category filter from URL
+      setCategoryFilter([Number(categoryParam)]);
     }
-  }, [products, applyFilters, activeFilters, sortBy]);
 
-  // Handle filter changes
-  const handleFilterChange = (newFilters) => {
-    setActiveFilters(newFilters);
-    setCurrentPage(1);
-    applyFilters(newFilters, sortBy);
-  };
+    if (searchParam) {
+      // Set search query from URL
+      setSearchQuery(searchParam);
+    }
+  }, [searchParams, setCategoryFilter, setSearchQuery]);
 
-  // Handle search
-  const handleSearchChange = (query) => {
+  /**
+   * Trigger search when filters change
+   */
+  useEffect(() => {
+    if (hasActiveFilters) {
+      searchProducts();
+    }
+  }, [filters, hasActiveFilters, searchProducts]);
+
+  /**
+   * Handle search from search bar
+   */
+  const handleSearch = (query) => {
     setSearchQuery(query);
-    const newFilters = { ...activeFilters, search: query };
-    setActiveFilters(newFilters);
-    setCurrentPage(1);
-    
     // Update URL
-    const params = new URLSearchParams(location.search);
     if (query) {
-      params.set('search', query);
+      searchParams.set('search', query);
     } else {
-      params.delete('search');
+      searchParams.delete('search');
     }
-    navigate({ search: params.toString() }, { replace: true });
-    
-    applyFilters(newFilters, sortBy);
+    setSearchParams(searchParams);
   };
 
-  // Handle sort change
-  const handleSortChange = (newSort) => {
-    setSortBy(newSort);
-    setCurrentPage(1);
-    applyFilters(activeFilters, newSort);
+  /**
+   * Handle category filter change
+   */
+  const handleCategoryChange = (categoryIds) => {
+    setCategoryFilter(categoryIds);
+    // Update URL
+    if (categoryIds.length === 1) {
+      searchParams.set('category', categoryIds[0]);
+    } else {
+      searchParams.delete('category');
+    }
+    setSearchParams(searchParams);
   };
 
-  // Handle clear filters
+  /**
+   * Handle price range change
+   */
+  const handlePriceChange = (priceRange) => {
+    setPriceRange(priceRange);
+  };
+
+  /**
+   * Handle clear all filters
+   */
   const handleClearFilters = () => {
-    const clearedFilters = {
-      categories: [],
-      educationLevels: [],
-      sizes: [],
-      priceRange: [0, 5000],
-      search: ''
-    };
-    
-    setActiveFilters(clearedFilters);
-    setSearchQuery('');
-    setCurrentPage(1);
-    
-    // Clear URL params
-    navigate({ search: '' }, { replace: true });
-    
-    applyFilters(clearedFilters, sortBy);
+    clearFilters();
+    setSearchParams({});
   };
 
-  // Handle pagination
-  const handlePageChange = (page) => {
-    setCurrentPage(page);
-    // Note: Pagination is handled on client-side now
-    // Scroll to top
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  };
-
-  // Toggle filter sidebar
-  const handleToggleFilter = () => {
+  /**
+   * Toggle filter sidebar
+   */
+  const toggleFilter = () => {
     setIsFilterOpen(!isFilterOpen);
   };
 
+  /**
+   * Get products to display
+   * Show filtered products if filters are active, otherwise show all products
+   */
+  const displayProducts = hasActiveFilters ? filteredProducts : allProducts;
+
+  /**
+   * Sort products
+   */
+  const sortedProducts = React.useMemo(() => {
+    const products = [...displayProducts];
+    
+    switch (sortBy) {
+      case 'price-low':
+        return products.sort((a, b) => {
+          const priceA = a.productsizes?.[0]?.price || 0;
+          const priceB = b.productsizes?.[0]?.price || 0;
+          return priceA - priceB;
+        });
+      case 'price-high':
+        return products.sort((a, b) => {
+          const priceA = a.productsizes?.[0]?.price || 0;
+          const priceB = b.productsizes?.[0]?.price || 0;
+          return priceB - priceA;
+        });
+      case 'name-asc':
+        return products.sort((a, b) => a.title.localeCompare(b.title, 'th'));
+      case 'name-desc':
+        return products.sort((a, b) => b.title.localeCompare(a.title, 'th'));
+      case 'newest':
+      default:
+        return products.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+    }
+  }, [displayProducts, sortBy]);
+
   return (
     <div className="min-h-screen bg-gray-50">
-      <div className="container mx-auto px-4 py-8">
-        {/* Shop Header
-        <ShopHeader
-          searchQuery={searchQuery}
-          onSearchChange={handleSearchChange}
-          totalProducts={totalCount}
-          activeFilters={activeFilters}
-          onClearFilters={handleClearFilters}
-          onToggleFilter={handleToggleFilter}
-          isFilterOpen={isFilterOpen}
-          className="mb-8"
-        /> */}
-
-        {/* Main Content */}
-        <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
-          {/* Filter Sidebar */}
-          <div className={`lg:col-span-1 ${isFilterOpen ? 'block' : 'hidden lg:block'}`}>
-            <ShopFilter
-              onFilterChange={handleFilterChange}
-              activeFilters={activeFilters}
-              onClearFilters={handleClearFilters}
-            />
+      {/* Header */}
+      <div className="bg-white border-b">
+        <div className="container mx-auto px-4 py-6">
+          <div className="flex items-center justify-between mb-4">
+            <h1 className="text-3xl font-bold text-gray-900">ร้านค้า</h1>
+            
+            {/* Mobile Filter Button */}
+            <Button
+              onClick={toggleFilter}
+              variant="outline"
+              className="lg:hidden"
+            >
+              <Filter className="h-4 w-4 mr-2" />
+              ตัวกรอง
+            </Button>
           </div>
+        </div>
+      </div>
+
+      {/* Main Content */}
+      <div className="container mx-auto px-4 py-8">
+        <div className="flex gap-6">
+          {/* Filter Sidebar */}
+          <aside
+            className={cn(
+              'lg:block lg:w-64 flex-shrink-0',
+              'fixed lg:relative inset-0 z-50 lg:z-auto',
+              'bg-white lg:bg-transparent',
+              isFilterOpen ? 'block' : 'hidden'
+            )}
+          >
+            <div className="lg:sticky lg:top-4 h-full lg:h-auto overflow-y-auto">
+              {/* Mobile Filter Header */}
+              <div className="lg:hidden flex items-center justify-between p-4 border-b">
+                <h2 className="text-lg font-semibold">ตัวกรอง</h2>
+                <button onClick={toggleFilter}>
+                  <X className="h-6 w-6" />
+                </button>
+              </div>
+
+              <div className="p-4 lg:p-0 space-y-6">
+                {/* Category Filter */}
+                <div className="bg-white rounded-lg p-4 shadow-sm">
+                  <h3 className="text-sm font-semibold text-gray-900 mb-4">
+                    หมวดหมู่สินค้า
+                  </h3>
+                  <CategoryFilter
+                    selectedCategories={filters.category}
+                    onChange={handleCategoryChange}
+                    showSelectAll
+                  />
+                </div>
+
+                {/* Price Filter */}
+                <div className="bg-white rounded-lg p-4 shadow-sm">
+                  <h3 className="text-sm font-semibold text-gray-900 mb-4">
+                    ช่วงราคา
+                  </h3>
+                  <PriceRangeFilter
+                    value={filters.price || [0, 5000]}
+                    onChange={handlePriceChange}
+                    min={0}
+                    max={5000}
+                    step={100}
+                  />
+                </div>
+
+                {/* Clear Filters */}
+                {hasActiveFilters && (
+                  <Button
+                    onClick={handleClearFilters}
+                    variant="outline"
+                    className="w-full"
+                  >
+                    ล้างตัวกรองทั้งหมด
+                  </Button>
+                )}
+              </div>
+            </div>
+
+            {/* Mobile Overlay */}
+            {isFilterOpen && (
+              <div
+                className="lg:hidden fixed inset-0 bg-black bg-opacity-50 -z-10"
+                onClick={toggleFilter}
+              />
+            )}
+          </aside>
 
           {/* Products Grid */}
-          <div className="lg:col-span-3">
-            <ProductGrid
-              products={products}
-              isLoading={isLoading}
-              error={error}
-              viewMode={viewMode}
-              sortBy={sortBy}
-              onSortChange={handleSortChange}
-              totalCount={totalCount}
-              currentPage={currentPage}
-              totalPages={totalPages}
-              onPageChange={handlePageChange}
-              hasNextPage={currentPage < totalPages}
-            />
-          </div>
+          <main className="flex-1">
+            {/* Toolbar */}
+            <div className="flex items-center justify-between mb-6">
+              <p className="text-sm text-gray-600">
+                {isLoading ? (
+                  'กำลังโหลด...'
+                ) : (
+                  <>
+                    แสดง <span className="font-semibold">{sortedProducts.length}</span> สินค้า
+                    {hasActiveFilters && (
+                      <span className="ml-1">
+                        จากทั้งหมด <span className="font-semibold">{allProducts.length}</span> สินค้า
+                      </span>
+                    )}
+                  </>
+                )}
+              </p>
+
+              <div className="flex items-center gap-4">
+                {/* View Mode Toggle */}
+                <div className="flex items-center gap-1 border rounded-lg p-1">
+                  <button
+                    onClick={() => setViewMode('grid')}
+                    className={cn(
+                      'p-2 rounded',
+                      viewMode === 'grid'
+                        ? 'bg-gray-100 text-gray-900'
+                        : 'text-gray-400 hover:text-gray-600'
+                    )}
+                  >
+                    <Grid className="h-4 w-4" />
+                  </button>
+                  <button
+                    onClick={() => setViewMode('list')}
+                    className={cn(
+                      'p-2 rounded',
+                      viewMode === 'list'
+                        ? 'bg-gray-100 text-gray-900'
+                        : 'text-gray-400 hover:text-gray-600'
+                    )}
+                  >
+                    <List className="h-4 w-4" />
+                  </button>
+                </div>
+
+                {/* Sort Dropdown */}
+                <select
+                  value={sortBy}
+                  onChange={(e) => setSortBy(e.target.value)}
+                  className="px-4 py-2 border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#001F3F]"
+                >
+                  <option value="newest">ใหม่ล่าสุด</option>
+                  <option value="price-low">ราคา: ต่ำ-สูง</option>
+                  <option value="price-high">ราคา: สูง-ต่ำ</option>
+                  <option value="name-asc">ชื่อ: ก-ฮ</option>
+                  <option value="name-desc">ชื่อ: ฮ-ก</option>
+                </select>
+              </div>
+            </div>
+
+            {/* Products Display */}
+            {error && (
+              <div className="text-center py-12">
+                <p className="text-red-600">{error}</p>
+                <Button onClick={searchProducts} className="mt-4">
+                  ลองอีกครั้ง
+                </Button>
+              </div>
+            )}
+
+            {isLoading ? (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {[...Array(6)].map((_, i) => (
+                  <div key={i} className="bg-white rounded-lg p-4 animate-pulse">
+                    <div className="aspect-square bg-gray-200 rounded-lg mb-4" />
+                    <div className="h-4 bg-gray-200 rounded mb-2" />
+                    <div className="h-4 bg-gray-200 rounded w-2/3" />
+                  </div>
+                ))}
+              </div>
+            ) : sortedProducts.length > 0 ? (
+              <ProductGrid products={sortedProducts} viewMode={viewMode} />
+            ) : (
+              <div className="text-center py-12">
+                <p className="text-gray-600 mb-4">
+                  {hasActiveFilters
+                    ? 'ไม่พบสินค้าที่ตรงกับการค้นหา'
+                    : 'ไม่มีสินค้า'}
+                </p>
+                {hasActiveFilters && (
+                  <Button onClick={handleClearFilters} variant="outline">
+                    ล้างตัวกรอง
+                  </Button>
+                )}
+              </div>
+            )}
+          </main>
         </div>
       </div>
     </div>

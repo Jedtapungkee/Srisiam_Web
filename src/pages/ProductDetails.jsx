@@ -89,29 +89,34 @@ const ProductDetails = () => {
   // console.log(product)
 
   const handleBuynow = async () => {
-    // const selectedSize = getSelectedSizeData(product || {});
-    // const { price, quantity } = selectedSize;
-    // if (quantity < count) {
-    //   toast.error("สินค้าขนาดนี้มีไม่เพียงพอ");
-    //   return;
-    // }
-    // const cart = {
-    //   ...product,
-    //   sizeData: selectedSize,
-    //   count: count,
-    // };
-    // // console.log(cart);
-    // try {
-    //   await createUserCart(token, { cart });
-    //   toast.success("เพิ่มสินค้าลงตะกร้าแล้ว");
-    //   navigate("/checkout");
+    const selectedSize = getSelectedSizeData(product || {});
+    const { price, quantity } = selectedSize;
+    if (quantity < count) {
+      toast.error("สินค้าขนาดนี้มีไม่เพียงพอ");
+      return;
+    }
+    const cartItem = {
+      ...product,
+      sizeData: selectedSize,
+      count: count,
+    };
+    // console.log(cartItem);
+    if(!token){
+      navigate("/auth/login");
+      return
+    }
+    try {
+      // ส่งเป็น array ที่มี 1 item
+      await createUserCart(token, { cart: [cartItem] });
+      toast.success("เพิ่มสินค้าลงตะกร้าแล้ว");
+      navigate("/checkout");
 
-    // } catch (error) {
-    //   console.error(error);
-    //   toast.error(error?.response?.data?.message || "บันทึกตะกร้าไม่สำเร็จ");
-    // }
-    // actionAddtoCart(product, count, selectedSize);
-    // toast.success("เพิ่มสินค้าลงตะกร้าแล้ว");
+    } catch (error) {
+      console.error(error);
+      toast.error(error?.response?.data?.message || "บันทึกตะกร้าไม่สำเร็จ");
+      return; // หยุดการทำงานถ้าเกิด error
+    }
+    actionAddtoCart(product, count, selectedSize);
   };
 
   if (!product) {

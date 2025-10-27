@@ -20,8 +20,8 @@ export const listUserCart = async (token) => {
 };
 
 
-export const createUserOrder = async(token) => {
-  return await axios.post(`${API_BASE_URL}/api/user/order`, {}, {
+export const createUserOrder = async(token, addressId) => {
+  return await axios.post(`${API_BASE_URL}/api/user/order`, { addressId }, {
     headers: {
       Authorization: `Bearer ${token}`
     }
@@ -42,4 +42,28 @@ export const cancelUserOrder = async(token, orderId) => {
       Authorization: `Bearer ${token}`
     }
   })
+}
+
+export const getUserProfile = async (token) => {
+  return await axios.get(`${API_BASE_URL}/api/user/profile`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+};
+
+export const updateUserProfile = async (token, formData) => {
+  return await axios.put(`${API_BASE_URL}/api/user/profile`, formData, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+}
+
+export const saveUserProfilePicture = async (token,pictureData)=>{
+  return await axios.post(`${API_BASE_URL}/api/user/profile/picture`, {picture: pictureData}, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
 }

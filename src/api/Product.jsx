@@ -63,8 +63,8 @@ export const removeFiles = async (token, public_id) => {
   );
 };
 
-export const SearchFilters = async (arg) => {
-  return await axios.post(`${API_BASE_URL}/api/search/filters`,arg);
+export const searchFilters = async (filters) => {
+  return await axios.post(`${API_BASE_URL}/api/search/filters`, filters);
 };
 
 export const listProductBy = async (sort,order,limit) => {

@@ -22,7 +22,7 @@ const AuthCallback = () => {
   useEffect(() => {
     if (user) {
       roleRedirect(user.role);
-      toast.success("Login successful!");
+      toast.success("welcome back!");
     }
   }, [user, navigate]);
 
@@ -30,7 +30,7 @@ const AuthCallback = () => {
     if (role === "admin") {
       navigate("/admin");
     } else {
-      navigate("/");
+      navigate(-3); 
     }
   };
 

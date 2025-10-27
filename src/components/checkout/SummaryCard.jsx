@@ -19,6 +19,7 @@ const SummaryCard = () => {
   const [products, setProducts] = useState([]);
   const [cartTotal, setCartTotal] = useState(0);
   const [selectedPaymentMethod, setSelectedPaymentMethod] = useState(""); // เพิ่ม state สำหรับ payment method
+  const [selectedAddress, setSelectedAddress] = useState(null); // เพิ่ม state สำหรับ address
   const [isLoading, setIsLoading] = useState(false); // เพิ่ม loading state
   const token = useSrisiamStore((state) => state.token);
   const navigate = useNavigate(); // เพิ่ม navigation hook
@@ -35,9 +36,20 @@ const SummaryCard = () => {
     setCartTotal(res.data.cartTotal);
   };
 
+  // ฟังก์ชันรับ address ที่เลือกจาก Addresscheckout
+  const handleAddressSelect = (address) => {
+    setSelectedAddress(address);
+  };
+
   // ฟังก์ชันสำหรับจัดการการสั่งซื้อ
   const handleOrderSubmit = async () => {
     try {
+      // ตรวจสอบว่าเลือก address แล้วหรือไม่
+      if (!selectedAddress) {
+        toast.error("กรุณาเลือกที่อยู่สำหรับจัดส่ง");
+        return;
+      }
+
       // ตรวจสอบว่าเลือก payment method แล้วหรือไม่
       if (!selectedPaymentMethod) {
         toast.error("กรุณาเลือกวิธีชำระเงิน");
@@ -46,8 +58,8 @@ const SummaryCard = () => {
 
       setIsLoading(true);
 
-      // สร้าง/อัปเดต order (Backend จะบันทึก shippingCost อัตโนมัติ)
-      const orderResponse = await createUserOrder(token);
+      // สร้าง/อัปเดต order พร้อมส่ง addressId (Backend จะบันทึก shippingCost อัตโนมัติ)
+      const orderResponse = await createUserOrder(token, selectedAddress.id);
 
       if (orderResponse.data.ok) {
         const orderId = orderResponse.data.order.id;
@@ -89,7 +101,7 @@ const SummaryCard = () => {
   return (
     <div>
       <div>
-        <Addresscheckout />
+        <Addresscheckout onAddressSelect={handleAddressSelect} />
       </div>
       <div className="mt-6">
         <h2 className="text-xl font-semibold">สรุปการสั่งซื้อ</h2>
