@@ -15,7 +15,7 @@ const Breadcrumbcheck = () => {
         <Breadcrumb className="flex items-center  space-x-2 ">
           <BreadcrumbItem>
             <BreadcrumbLink href="/">
-              <h2 className="font-bold text-3xl">SriSiam</h2>
+              <h2 className="font-bold text-3xl">Srisiam</h2>
             </BreadcrumbLink>
           </BreadcrumbItem>
           <BreadcrumbSeparator className="font-bold" />

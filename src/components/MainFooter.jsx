@@ -1,15 +1,15 @@
-import React from 'react';
-import { 
-  Phone, 
-  MapPin, 
-  Clock, 
-  Mail, 
-  Facebook, 
-  Instagram, 
+import React from "react";
+import {
+  Phone,
+  MapPin,
+  Clock,
+  Mail,
+  Facebook,
+  Instagram,
   MessageCircle,
   Heart,
-  ExternalLink
-} from 'lucide-react';
+  ExternalLink,
+} from "lucide-react";
 
 const MainFooter = () => {
   return (
@@ -17,7 +17,6 @@ const MainFooter = () => {
       {/* Main Footer Content */}
       <div className="container mx-auto px-4 py-12">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-          
           {/* Contact Info */}
           <div className="space-y-4">
             <h3 className="text-xl font-bold text-blue-300 mb-6 flex items-center">
@@ -28,10 +27,6 @@ const MainFooter = () => {
               <div className="flex items-center space-x-3 hover:text-blue-200 transition-colors">
                 <Phone className="h-4 w-4 text-blue-300" />
                 <span className="font-medium">032-211-856</span>
-              </div>
-              <div className="flex items-center space-x-3 hover:text-blue-200 transition-colors">
-                <Phone className="h-4 w-4 text-blue-300" />
-                <span className="font-medium">089-123-4567</span>
               </div>
               <div className="flex items-center space-x-3 hover:text-blue-200 transition-colors">
                 <Mail className="h-4 w-4 text-blue-300" />
@@ -55,22 +50,13 @@ const MainFooter = () => {
                 <MapPin className="h-4 w-4 text-blue-300 mt-1 flex-shrink-0" />
                 <div>
                   <p className="font-medium leading-relaxed">
-                    109 ถนนประชาธิปัต ตำบลศาลาใหม่<br />
-                    อำเภอศาลาใหม่ จังหวัดนครปฐม<br />
+                    109 ถนนประชานิยม ตำบลบ้านโป่ง
+                    <br />
+                    อำเภอบ้านโป่ง จังหวัดราชบุรี
+                    <br />
                     <span className="text-blue-200">70110</span>
                   </p>
                 </div>
-              </div>
-              <div className="flex items-center space-x-2 mt-4">
-                <ExternalLink className="h-4 w-4 text-blue-300" />
-                <a 
-                  href="https://maps.google.com" 
-                  target="_blank" 
-                  rel="noopener noreferrer"
-                  className="text-blue-300 hover:text-blue-200 underline text-sm"
-                >
-                  ดูแผนที่ Google Maps
-                </a>
               </div>
             </div>
           </div>
@@ -98,7 +84,8 @@ const MainFooter = () => {
               </div>
               <div className="mt-4 p-3 rounded-lg  ">
                 <p className="text-sm text-white">
-                  <span className="font-semibold">หมายเหตุ:</span> รับออร์เดอร์ออนไลน์ 24/7
+                  <span className="font-semibold">หมายเหตุ:</span>{" "}
+                  รับออร์เดอร์ออนไลน์ 24/7
                 </p>
               </div>
             </div>
@@ -111,56 +98,36 @@ const MainFooter = () => {
             </h3>
             <div className="space-y-4">
               <p className="text-gray-300 text-sm leading-relaxed">
-                ร้านเครื่องแบบนักเรียนคุณภาพสูง มีประสบการณ์กว่า 15 ปี 
+                ร้านเครื่องแบบนักเรียนคุณภาพสูง มีประสบการณ์กว่า 15 ปี
                 ให้บริการเครื่องแบบนักเรียนครบครัน ราคาเป็นมิตร
               </p>
-              
+
               {/* Social Media */}
               <div>
                 <h4 className="font-semibold text-gray-200 mb-3">ติดตามเรา</h4>
                 <div className="flex space-x-3">
-                  <a 
-                    href="#" 
+                  <a
+                    href="#"
                     className="bg-blue-600 hover:bg-blue-700 p-2 rounded-full transition-colors"
                   >
                     <Facebook className="h-5 w-5" />
                   </a>
-                  <a 
-                    href="#" 
+                  <a
+                    href="#"
                     className="bg-pink-600 hover:bg-pink-700 p-2 rounded-full transition-colors"
                   >
                     <Instagram className="h-5 w-5" />
                   </a>
-                  <a 
-                    href="#" 
+                  <a
+                    href="#"
                     className="bg-green-600 hover:bg-green-700 p-2 rounded-full transition-colors"
                   >
                     <MessageCircle className="h-5 w-5" />
                   </a>
                 </div>
               </div>
-
-              {/* Quick Links */}
-              <div>
-                <h4 className="font-semibold text-gray-200 mb-3">ลิงก์ด่วน</h4>
-                <div className="space-y-2 text-sm">
-                  <a href="/products" className="block text-gray-300 hover:text-blue-200 transition-colors">
-                    • สินค้าทั้งหมด
-                  </a>
-                  <a href="/size-guide" className="block text-gray-300 hover:text-blue-200 transition-colors">
-                    • คู่มือเลือกไซส์
-                  </a>
-                  <a href="/shipping" className="block text-gray-300 hover:text-blue-200 transition-colors">
-                    • นโยบายการส่งสินค้า
-                  </a>
-                  <a href="/return" className="block text-gray-300 hover:text-blue-200 transition-colors">
-                    • นโยบายการคืนสินค้า
-                  </a>
-                </div>
-              </div>
             </div>
           </div>
-
         </div>
       </div>
 
@@ -176,13 +143,19 @@ const MainFooter = () => {
                 ออกแบบและพัฒนาโดย Srisiam Team
               </p>
             </div>
-            
+
             <div className="flex items-center space-x-4 text-sm text-gray-300">
-              <a href="/privacy" className="hover:text-blue-200 transition-colors">
+              <a
+                href="/privacy"
+                className="hover:text-blue-200 transition-colors"
+              >
                 นโยบายความเป็นส่วนตัว
               </a>
               <span className="text-gray-500">|</span>
-              <a href="/terms" className="hover:text-blue-200 transition-colors">
+              <a
+                href="/terms"
+                className="hover:text-blue-200 transition-colors"
+              >
                 เงื่อนไขการใช้งาน
               </a>
             </div>

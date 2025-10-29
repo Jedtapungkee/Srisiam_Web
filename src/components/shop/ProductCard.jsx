@@ -5,19 +5,14 @@ import { Button } from "../ui/button";
 import { Badge } from "../ui/badge";
 import {
   ShoppingCart,
-  Heart,
-  Eye,
-  Star,
-  DollarSign,
   Shirt,
-  Award,
 } from "lucide-react";
 import { formatSizeForDisplay } from "../../utils/product";
-import useSrisiamStore from "../../store/Srisiam-store";
+import AddToCartDialog from "./AddToCartDialog";
 
 const ProductCard = ({ product, className = "" }) => {
   const [isImageLoaded, setIsImageLoaded] = useState(false);
-  const actionAddtoCart = useSrisiamStore((state) => state.actionAddtoCart);
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
 
 //   console.log("Product in ProductCard:", product);
 
@@ -62,11 +57,19 @@ const ProductCard = ({ product, className = "" }) => {
 
   const handleAddToCart = (e) => {
     e.preventDefault();
-    actionAddtoCart(product, 1,{size: getAvailableSizes()[0] || null, price: getProductPrice()});
+    e.stopPropagation();
+    setIsDialogOpen(true);
   };
 
   return (
-    <Link to={`/product/${product.id}`} className="block group">
+    <>
+      <AddToCartDialog
+        product={product}
+        open={isDialogOpen}
+        onOpenChange={setIsDialogOpen}
+      />
+      
+      <Link to={`/product/${product.id}`} className="block group">
       <Card
         className={`overflow-hidden transition-all duration-300 hover:shadow-xl hover:-translate-y-2 bg-white border-0 shadow-md ${className}`}
       >
@@ -197,6 +200,7 @@ const ProductCard = ({ product, className = "" }) => {
         </CardContent>
       </Card>
     </Link>
+    </>
   );
 };
 

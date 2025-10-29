@@ -4,16 +4,7 @@ import { cn } from '../../lib/utils';
 import { listCategory } from '../../api/Category';
 import { toast } from 'sonner';
 
-/**
- * CategoryFilter Component
- * Displays categories as checkboxes for filtering products
- * 
- * @param {Object} props
- * @param {Array<number>} props.selectedCategories - Array of selected category IDs
- * @param {Function} props.onChange - Callback when categories change
- * @param {boolean} props.showSelectAll - Show "Select All" option
- * @param {string} props.className - Additional CSS classes
- */
+
 const CategoryFilter = ({
   selectedCategories = [],
   onChange,

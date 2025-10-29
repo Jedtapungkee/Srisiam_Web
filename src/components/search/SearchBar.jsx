@@ -4,21 +4,6 @@ import { Input } from '../ui/input';
 import { Button } from '../ui/button';
 import { cn } from '../../lib/utils';
 
-/**
- * SearchBar Component
- * Reusable search input component with clear functionality
- * 
- * @param {Object} props
- * @param {string} props.value - Current search value
- * @param {Function} props.onChange - Callback when value changes
- * @param {Function} props.onSearch - Callback when search is triggered (Enter or button click)
- * @param {Function} props.onClear - Callback when clear button is clicked
- * @param {string} props.placeholder - Placeholder text
- * @param {string} props.className - Additional CSS classes
- * @param {boolean} props.autoFocus - Auto focus on mount
- * @param {boolean} props.showSearchButton - Show search button
- * @param {string} props.variant - Variant style: 'default' | 'navbar'
- */
 const SearchBar = ({
   value = '',
   onChange,

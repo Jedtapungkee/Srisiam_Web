@@ -1,19 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { cn } from '../../lib/utils';
 
-/**
- * PriceRangeFilter Component
- * Dual range slider for filtering products by price
- * 
- * @param {Object} props
- * @param {Array<number>} props.value - [min, max] price range
- * @param {Function} props.onChange - Callback when range changes
- * @param {number} props.min - Minimum price
- * @param {number} props.max - Maximum price
- * @param {number} props.step - Step increment
- * @param {string} props.currency - Currency symbol
- * @param {string} props.className - Additional CSS classes
- */
+
 const PriceRangeFilter = ({
   value = [0, 5000],
   onChange,

@@ -3,7 +3,7 @@ import React from 'react'
 
 const Order = () => {
   return (
-    <div className="p-6">
+    <div >
       <TableOrder/>
     </div>
   )

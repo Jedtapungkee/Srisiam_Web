@@ -161,14 +161,7 @@ const OrderActions = ({ order, onOrderCancelled }) => {
           ติดต่อร้านค้า
         </Button>
 
-        {/* Share Button */}
-        <Button 
-          variant="ghost" 
-          size="sm"
-          onClick={handleShareOrder}
-        >
-          <Share2 className="w-4 h-4" />
-        </Button>
+       
       </div>
 
       {/* Right: primary actions (pay, cancel) - pushed to the right */}

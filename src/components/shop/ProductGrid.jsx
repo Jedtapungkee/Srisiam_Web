@@ -10,22 +10,12 @@ import {
   Loader2,
   AlertCircle
 } from 'lucide-react';
-import { 
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '../ui/select';
-import { Badge } from '../ui/badge';
+
 
 const ProductGrid = ({ 
   products = [], 
   isLoading = false, 
   error = null,
-  viewMode = 'grid',
-  sortBy = 'newest',
-  onSortChange,
   totalCount = 0,
   currentPage = 1,
   totalPages = 1,
@@ -33,17 +23,6 @@ const ProductGrid = ({
   hasNextPage = false,
   className = ""
 }) => {
-
-  const sortOptions = [
-    { value: 'newest', label: 'ใหม่ล่าสุด' },
-    { value: 'oldest', label: 'เก่าที่สุด' },
-    { value: 'price-low', label: 'ราคาน้อยไปมาก' },
-    { value: 'price-high', label: 'ราคามากไปน้อย' },
-    { value: 'name-asc', label: 'ชื่อ A-Z' },
-    { value: 'name-desc', label: 'ชื่อ Z-A' },
-    { value: 'popular', label: 'ยอดนิยม' },
-    { value: 'rating', label: 'คะแนนสูงสุด' }
-  ];
 
   // Loading Skeleton Component
   const ProductSkeleton = () => (
@@ -81,11 +60,7 @@ const ProductGrid = ({
     <div className={`space-y-6 ${className}`}>
       {/* Products Grid/List */}
       {isLoading ? (
-        <div className={`grid gap-6 ${
-          viewMode === 'grid' 
-            ? 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4' 
-            : 'grid-cols-1'
-        }`}>
+        <div className={`grid gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4`}>
           {[...Array(12)].map((_, index) => (
             <ProductSkeleton key={index} />
           ))}
@@ -102,16 +77,11 @@ const ProductGrid = ({
       ) : (
         <>
           {/* Products Grid */}
-          <div className={`grid gap-6 ${
-            viewMode === 'grid' 
-              ? 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4' 
-              : 'grid-cols-1 md:grid-cols-2'
-          }`}>
+          <div className={`grid gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4`}>
             {products.map((product) => (
               <ProductCard
                 key={product.id}
                 product={product}
-                className={viewMode === 'list' ? 'flex-row' : ''}
               />
             ))}
           </div>

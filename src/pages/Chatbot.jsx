@@ -108,8 +108,6 @@ const Chatbot = () => {
     <div>
       <Breadcrumbs />
       <div className="container max-w-5xl mx-auto py-6">
-        {/* Page Header */}
-
         {/* Chat Container */}
         <Card className="shadow-xl border-0">
           <CardContent className="p-0">

@@ -30,10 +30,7 @@ const ShopHeader = ({
     return count;
   };
 
-  const handleSearchSubmit = (e) => {
-    e.preventDefault();
-    // Search is already handled by onChange, but we can add analytics here
-  };
+
 
   return (
     <div className={`space-y-6 ${className}`}>

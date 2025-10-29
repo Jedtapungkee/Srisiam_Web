@@ -1,14 +1,14 @@
-import React, { useState } from 'react';
+import React from 'react';
 import {
-  LineChart,
+  ComposedChart,
+  Bar,
   Line,
   XAxis,
   YAxis,
   CartesianGrid,
   Tooltip,
   ResponsiveContainer,
-  AreaChart,
-  Area
+  Legend
 } from 'recharts';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../../ui/card';
 import { Button } from '../../ui/button';
@@ -45,20 +45,38 @@ const SalesChart = ({ data, loading, onPeriodChange, currentPeriod }) => {
     }
   };
 
+  // compact number formatter (e.g. 1.2K, 1M)
+  const formatNumberCompact = (num) => {
+    try {
+      return new Intl.NumberFormat('th-TH', { maximumFractionDigits: 1, notation: 'compact' }).format(num);
+    } catch (e) {
+      return num.toLocaleString();
+    }
+  };
+
+  const formatCurrencyCompact = (num) => {
+    try {
+      // keep currency symbol but compact the number: ฿1.2K
+      const compact = new Intl.NumberFormat('th-TH', { maximumFractionDigits: 1, notation: 'compact' }).format(num);
+      return `฿${compact}`;
+    } catch (e) {
+      return `฿${num.toLocaleString()}`;
+    }
+  };
+
   const CustomTooltip = ({ active, payload, label }) => {
     if (active && payload && payload.length) {
+      const salesEntry = payload.find((p) => p.dataKey === 'sales');
+      const ordersEntry = payload.find((p) => p.dataKey === 'orders');
       return (
-        <div className="bg-white p-4 border rounded-lg shadow-lg">
-          <p className="font-medium">{formatTooltipLabel(label)}</p>
-          {payload.map((entry, index) => (
-            <p key={index} style={{ color: entry.color }}>
-              {entry.dataKey === 'sales' ? 'ยอดขาย' : 'คำสั่งซื้อ'}: {
-                entry.dataKey === 'sales' 
-                  ? `฿${entry.value.toLocaleString()}` 
-                  : `${entry.value} รายการ`
-              }
-            </p>
-          ))}
+        <div className="bg-white p-3 border rounded shadow-sm text-sm">
+          <div className="font-medium mb-1">{formatTooltipLabel(label)}</div>
+          {salesEntry && (
+            <div className="text-blue-600">ยอดขาย: ฿{Number(salesEntry.value).toLocaleString()}</div>
+          )}
+          {ordersEntry && (
+            <div className="text-green-600">คำสั่งซื้อ: {ordersEntry.value} รายการ</div>
+          )}
         </div>
       );
     }
@@ -123,43 +141,61 @@ const SalesChart = ({ data, loading, onPeriodChange, currentPeriod }) => {
             </div>
           ) : (
             <ResponsiveContainer width="100%" height="100%">
-              <AreaChart data={data} margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
+              <ComposedChart data={data} margin={{ top: 8, right: 20, left: 0, bottom: 0 }}>
                 <defs>
                   <linearGradient id="salesGradient" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="#3B82F6" stopOpacity={0.3}/>
-                    <stop offset="95%" stopColor="#3B82F6" stopOpacity={0}/>
-                  </linearGradient>
-                  <linearGradient id="ordersGradient" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="#10B981" stopOpacity={0.3}/>
-                    <stop offset="95%" stopColor="#10B981" stopOpacity={0}/>
+                    <stop offset="5%" stopColor="#3B82F6" stopOpacity={0.18} />
+                    <stop offset="95%" stopColor="#3B82F6" stopOpacity={0} />
                   </linearGradient>
                 </defs>
-                <CartesianGrid strokeDasharray="3 3" className="opacity-30" />
-                <XAxis 
-                  dataKey="date" 
+
+                {/* only horizontal grid lines, lighter */}
+                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#E6EEF8" />
+
+                <XAxis
+                  dataKey="date"
                   tickFormatter={formatXAxisLabel}
-                  className="text-xs"
+                  tick={{ fontSize: 12 }}
+                  interval="preserveStartEnd"
                 />
-                <YAxis className="text-xs" />
+
+                {/* left Y: sales (currency) */}
+                <YAxis
+                  yAxisId="left"
+                  tickFormatter={(value) => formatCurrencyCompact(value)}
+                />
+
+                {/* right Y: orders (count) */}
+                <YAxis
+                  yAxisId="right"
+                  orientation="right"
+                  tickFormatter={(v) => (Number.isInteger(v) ? v : Math.round(v))}
+                />
+
                 <Tooltip content={<CustomTooltip />} />
-                
-                <Area
-                  type="monotone"
+                <Legend verticalAlign="top" wrapperStyle={{ fontSize: 12 }} />
+
+                {/* bars for sales (primary visual) */}
+                <Bar
+                  yAxisId="left"
                   dataKey="sales"
-                  stroke="#3B82F6"
-                  strokeWidth={3}
+                  name="ยอดขาย"
                   fill="url(#salesGradient)"
+                  stroke="#3B82F6"
+                  barSize={36}
                 />
-                
+
+                {/* line for orders on the right axis */}
                 <Line
+                  yAxisId="right"
                   type="monotone"
                   dataKey="orders"
+                  name="คำสั่งซื้อ"
                   stroke="#10B981"
                   strokeWidth={2}
-                  dot={{ fill: '#10B981', strokeWidth: 2, r: 4 }}
-                  activeDot={{ r: 6, stroke: '#10B981', strokeWidth: 2 }}
+                  dot={false}
                 />
-              </AreaChart>
+              </ComposedChart>
             </ResponsiveContainer>
           )}
         </div>

@@ -77,6 +77,7 @@ const Dashboard = () => {
   }, [token]);
 
   const { overview } = dashboardData;
+  // console.log('Dashboard Data:', dashboardData);
 
   // Calculate revenue growth
   const revenueGrowth = overview.lastMonthRevenue > 0 
@@ -134,11 +135,11 @@ const Dashboard = () => {
       {/* Secondary Stats */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
         <StatCard
-          title="รอดำเนินการ"
-          value={overview.pendingOrders?.toLocaleString() || '0'}
+          title="กำลังดำเนินการ"
+          value={overview.processingOrders?.toLocaleString() || '0'}
           icon={Clock}
           iconColor="orange"
-          description="คำสั่งซื้อที่รอดำเนินการ"
+          description="คำสั่งซื้อที่กำลังดำเนินการ"
         />
         
         <StatCard

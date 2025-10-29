@@ -13,15 +13,6 @@ import {
 } from "lucide-react";
 
 const OrderProductDialog = ({ order, open, onOpenChange }) => {
-  // Debug: แสดงข้อมูล order ที่ได้รับ
-  React.useEffect(() => {
-    if (order && open) {
-      console.log('📦 Order Data:', order);
-      console.log('👤 OrderedBy:', order.orderedBy);
-      console.log('📍 Address:', order.address);
-      console.log('💳 Payment:', order.payment);
-    }
-  }, [order, open]);
 
   const formatPrice = (price) => {
     return new Intl.NumberFormat('th-TH', {
@@ -39,8 +30,6 @@ const OrderProductDialog = ({ order, open, onOpenChange }) => {
     const labels = {
       PROMPTPAY: 'พร้อมเพย์ (QR Code)',
       STRIPE: 'บัตรเครดิต/เดบิต (Stripe)',
-      BANK_TRANSFER: 'โอนเงินผ่านธนาคาร',
-      CASH_ON_DELIVERY: 'เก็บเงินปลายทาง (COD)'
     };
     return labels[method] || method;
   };
@@ -52,10 +41,6 @@ const OrderProductDialog = ({ order, open, onOpenChange }) => {
         return <Wallet className="h-4 w-4" />;
       case 'STRIPE':
         return <CreditCard className="h-4 w-4" />;
-      case 'BANK_TRANSFER':
-        return <Banknote className="h-4 w-4" />;
-      case 'CASH_ON_DELIVERY':
-        return <HandCoins className="h-4 w-4" />;
       default:
         return <CreditCard className="h-4 w-4" />;
     }
@@ -78,7 +63,7 @@ const OrderProductDialog = ({ order, open, onOpenChange }) => {
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       
-      <DialogContent className="!max-w-[90vw] w-full max-h-[90vh] overflow-y-auto">
+      <DialogContent className="!max-w-[80vw] w-full max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2 text-2xl">
             <ShoppingBag className="h-7 w-7 text-blue-600" />
@@ -180,32 +165,6 @@ const OrderProductDialog = ({ order, open, onOpenChange }) => {
                   {order.payment.transactionRef && (
                     <div>
                       <strong>หมายเลขอ้างอิง:</strong> <code className="bg-gray-100 px-2 py-1 rounded text-sm">{order.payment.transactionRef}</code>
-                    </div>
-                  )}
-                  {order.payment.method === 'BANK_TRANSFER' && order.payment.slipImageUrl && (
-                    <div>
-                      <strong>สลิปการโอนเงิน:</strong>{' '}
-                      <a 
-                        href={order.payment.slipImageUrl} 
-                        target="_blank" 
-                        rel="noopener noreferrer"
-                        className="text-blue-600 hover:underline"
-                      >
-                        ดูสลิป
-                      </a>
-                    </div>
-                  )}
-                  {order.payment.method === 'PROMPTPAY' && order.payment.qrImageUrl && (
-                    <div>
-                      <strong>QR Code:</strong>{' '}
-                      <a 
-                        href={order.payment.qrImageUrl} 
-                        target="_blank" 
-                        rel="noopener noreferrer"
-                        className="text-blue-600 hover:underline"
-                      >
-                        ดู QR Code
-                      </a>
                     </div>
                   )}
                 </div>

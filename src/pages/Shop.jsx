@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { useLocation, useNavigate, useSearchParams } from 'react-router-dom';
 import { Filter, X, Grid, List } from 'lucide-react';
 import { Button } from '../components/ui/button';
-import SearchBar from '../components/search/SearchBar';
 import CategoryFilter from '../components/search/CategoryFilter';
 import PriceRangeFilter from '../components/search/PriceRangeFilter';
 import ProductGrid from '../components/Shop/ProductGrid';
@@ -15,8 +14,6 @@ import { cn } from '../lib/utils';
  * Main shop page with search, filter, and product display functionality
  */
 const Shop = () => {
-  const location = useLocation();
-  const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
   
   // Zustand Store - For all products
@@ -34,7 +31,6 @@ const Shop = () => {
     setCategoryFilter,
     clearFilters,
     hasActiveFilters,
-    resultsCount,
   } = useProductSearch();
 
   // UI States
@@ -76,19 +72,7 @@ const Shop = () => {
     }
   }, [filters, hasActiveFilters, searchProducts]);
 
-  /**
-   * Handle search from search bar
-   */
-  const handleSearch = (query) => {
-    setSearchQuery(query);
-    // Update URL
-    if (query) {
-      searchParams.set('search', query);
-    } else {
-      searchParams.delete('search');
-    }
-    setSearchParams(searchParams);
-  };
+  
 
   /**
    * Handle category filter change
@@ -272,32 +256,6 @@ const Shop = () => {
               </p>
 
               <div className="flex items-center gap-4">
-                {/* View Mode Toggle */}
-                <div className="flex items-center gap-1 border rounded-lg p-1">
-                  <button
-                    onClick={() => setViewMode('grid')}
-                    className={cn(
-                      'p-2 rounded',
-                      viewMode === 'grid'
-                        ? 'bg-gray-100 text-gray-900'
-                        : 'text-gray-400 hover:text-gray-600'
-                    )}
-                  >
-                    <Grid className="h-4 w-4" />
-                  </button>
-                  <button
-                    onClick={() => setViewMode('list')}
-                    className={cn(
-                      'p-2 rounded',
-                      viewMode === 'list'
-                        ? 'bg-gray-100 text-gray-900'
-                        : 'text-gray-400 hover:text-gray-600'
-                    )}
-                  >
-                    <List className="h-4 w-4" />
-                  </button>
-                </div>
-
                 {/* Sort Dropdown */}
                 <select
                   value={sortBy}
@@ -334,7 +292,7 @@ const Shop = () => {
                 ))}
               </div>
             ) : sortedProducts.length > 0 ? (
-              <ProductGrid products={sortedProducts} viewMode={viewMode} />
+              <ProductGrid products={sortedProducts}  />
             ) : (
               <div className="text-center py-12">
                 <p className="text-gray-600 mb-4">

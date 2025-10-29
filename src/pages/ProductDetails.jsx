@@ -102,6 +102,7 @@ const ProductDetails = () => {
     };
     // console.log(cartItem);
     if(!token){
+      toast.error("กรุณาเข้าสู่ระบบเพื่อทำการสั่งซื้อ");
       navigate("/auth/login");
       return
     }
@@ -136,7 +137,7 @@ const ProductDetails = () => {
         <Breadcrumb className="flex items-center space-x-2 ">
           <BreadcrumbItem>
             <BreadcrumbLink href="/">
-              <h2 className="font-bold text-3xl">SriSiam</h2>
+              <h2 className="font-bold text-3xl">Srisiam</h2>
             </BreadcrumbLink>
           </BreadcrumbItem>
           <BreadcrumbSeparator className="font-bold" />
