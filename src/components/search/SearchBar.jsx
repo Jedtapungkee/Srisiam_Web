@@ -67,14 +67,26 @@ const SearchBar = ({
       ),
       icon: 'text-blue-200 group-focus-within:text-gray-500',
     },
+    mobile: {
+      container: 'w-full',
+      input: cn(
+        'bg-white/20 text-white placeholder:text-blue-200 border-white/30 rounded-lg',
+        'focus:bg-white focus:text-gray-900 focus:placeholder:text-gray-500',
+        'transition-all duration-200'
+      ),
+      icon: 'text-blue-200 group-focus-within:text-gray-500',
+    },
   };
 
   const styles = variantStyles[variant] || variantStyles.default;
 
   return (
     <div className={cn(styles.container, className)}>
-      {variant === 'navbar' && (
-        <div className="absolute -inset-1 bg-gradient-to-r from-white/20 to-white/10 transform -skew-x-12 rounded-full opacity-60 group-focus-within:opacity-100 transition-opacity duration-300" />
+      {(variant === 'navbar' || variant === 'mobile') && (
+        <div className={cn(
+          "absolute -inset-1 bg-gradient-to-r from-white/20 to-white/10 transform opacity-60 group-focus-within:opacity-100 transition-opacity duration-300",
+          variant === 'navbar' ? '-skew-x-12 rounded-full' : 'rounded-lg'
+        )} />
       )}
       
       <div className="relative flex items-center">
@@ -90,7 +102,7 @@ const SearchBar = ({
           className={cn(
             'pr-20',
             styles.input,
-            showSearchButton ? 'rounded-l-full rounded-r-none' : 'rounded-full'
+            showSearchButton ? 'rounded-l-full rounded-r-none' : (variant === 'mobile' ? 'rounded-lg' : 'rounded-full')
           )}
         />
 
@@ -100,7 +112,7 @@ const SearchBar = ({
             onClick={handleClear}
             className={cn(
               'absolute right-10 p-1 hover:bg-gray-100 rounded-full transition-colors',
-              variant === 'navbar' && 'hover:bg-white/20'
+              (variant === 'navbar' || variant === 'mobile') && 'hover:bg-white/20'
             )}
             aria-label="Clear search"
             type="button"

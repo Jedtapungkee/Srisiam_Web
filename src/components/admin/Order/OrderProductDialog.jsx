@@ -5,12 +5,10 @@ import {
   ShoppingBag, 
   Package, 
   Tag,
-  ShoppingCart,
   CreditCard,
   Wallet,
-  Banknote,
-  HandCoins
 } from "lucide-react";
+import { formatSizeForDisplay } from "../../../utils/product";
 
 const OrderProductDialog = ({ order, open, onOpenChange }) => {
 
@@ -277,7 +275,7 @@ const OrderProductDialog = ({ order, open, onOpenChange }) => {
                               ไซส์ที่เลือก:
                             </span>
                             <Badge className="bg-purple-100 text-purple-800 border-purple-200">
-                              {product.size}
+                              {formatSizeForDisplay(product.size)}
                             </Badge>
                           </div>
                         )}

@@ -82,7 +82,11 @@ const FormProduct = () => {
 
   const updateProductSize = (index, field, value) => {
     const updated = [...productSizes];
-    updated[index][field] = value;
+    if (field === "size") {
+      updated[index][field] = value.toUpperCase();
+    } else {
+      updated[index][field] = value;
+    }
     setProductSizes(updated);
   };
 

@@ -71,7 +71,7 @@ const ProductCard = ({ product, className = "" }) => {
       
       <Link to={`/product/${product.id}`} className="block group">
       <Card
-        className={`overflow-hidden transition-all duration-300 hover:shadow-xl hover:-translate-y-2 bg-white border-0 shadow-md ${className}`}
+        className={`overflow-hidden transition-all duration-300 hover:shadow-xl hover:-translate-y-1 sm:hover:-translate-y-2 bg-white border-0 shadow-md ${className}`}
       >
         <CardContent className="p-0">
           {/* Image Container */}
@@ -92,7 +92,7 @@ const ProductCard = ({ product, className = "" }) => {
             {/* Loading Skeleton */}
             {!isImageLoaded && (
               <div className="absolute inset-0 bg-gray-200 animate-pulse flex items-center justify-center">
-                <Shirt className="w-12 h-12 text-gray-400" />
+                <Shirt className="w-8 h-8 sm:w-12 sm:h-12 text-gray-400" />
               </div>
             )}
 
@@ -100,26 +100,28 @@ const ProductCard = ({ product, className = "" }) => {
             <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-all duration-300">
 
               {/* Quick Add to Cart */}
-              <div className="absolute bottom-4 left-4 right-4 opacity-0 group-hover:opacity-100 transition-all duration-300 transform translate-y-4 group-hover:translate-y-0">
+              <div className="absolute bottom-2 sm:bottom-4 left-2 sm:left-4 right-2 sm:right-4 opacity-0 group-hover:opacity-100 transition-all duration-300 transform translate-y-4 group-hover:translate-y-0">
                 <Button
                   onClick={handleAddToCart}
-                  className="w-full bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white font-semibold rounded-lg shadow-lg"
+                  size="sm"
+                  className="w-full bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white font-semibold rounded-lg shadow-lg text-xs sm:text-sm py-2 sm:py-3"
                 >
-                  <ShoppingCart className="w-4 h-4 mr-2" />
-                  เพิ่มในตะกร้า
+                  <ShoppingCart className="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2" />
+                  <span className="hidden sm:inline">เพิ่มในตะกร้า</span>
+                  <span className="sm:hidden">เพิ่ม</span>
                 </Button>
               </div>
             </div>
           </div>
 
           {/* Product Info */}
-          <div className="p-4 space-y-3">
+          <div className="p-2 sm:p-3 lg:p-4 space-y-1.5 sm:space-y-2 lg:space-y-3">
             {/* Category & Education Level */}
             <div className="flex items-center justify-between text-xs">
               {product.category && (
                 <Badge
                   variant="outline"
-                  className="text-blue-600 border-blue-200"
+                  className="text-blue-600 border-blue-200 text-xs px-1.5 sm:px-2 py-0.5 sm:py-1"
                 >
                   {product.category.name}
                 </Badge>
@@ -127,7 +129,7 @@ const ProductCard = ({ product, className = "" }) => {
               {product.educationLevel && (
                 <Badge
                   variant="outline"
-                  className="text-gray-600 border-gray-200"
+                  className="text-gray-600 border-gray-200 text-xs px-1.5 sm:px-2 py-0.5 sm:py-1"
                 >
                   {product.educationLevel.name}
                 </Badge>
@@ -135,26 +137,26 @@ const ProductCard = ({ product, className = "" }) => {
             </div>
 
             {/* Title */}
-            <h3 className="font-bold text-gray-800 group-hover:text-blue-600 transition-colors line-clamp-2 leading-tight">
+            <h3 className="font-bold text-xs sm:text-sm lg:text-base text-gray-800 group-hover:text-blue-600 transition-colors line-clamp-2 leading-tight">
               {product.title}
             </h3>
 
-            {/* Description */}
+            {/* Description - Hidden on mobile for space */}
             {product.description && (
-              <p className="text-sm text-gray-600 line-clamp-2 leading-relaxed">
-                {product.description}
+              <p className="hidden sm:block text-xs lg:text-sm text-gray-600 line-clamp-2 leading-relaxed">
+                {product.description.substring(0, 20)}...
               </p>
             )}
 
             {/* Price */}
             <div className="flex items-center justify-between">
-              <div className="flex items-center space-x-2">
+              <div className="flex items-center space-x-1">
                 <div className="flex flex-col">
-                  <span className="font-bold text-lg text-gray-800">
+                  <span className="font-bold text-sm sm:text-base lg:text-lg text-gray-800">
                     {formatPrice(getProductPrice())}
                   </span>
                   {product.originalPrice && product.originalPrice > getProductPrice() && (
-                    <span className="text-sm text-gray-500 line-through">
+                    <span className="text-xs text-gray-500 line-through">
                       {formatPrice(product.originalPrice)}
                     </span>
                   )}
@@ -165,11 +167,11 @@ const ProductCard = ({ product, className = "" }) => {
               <div className="text-right">
                 {getTotalQuantity() > 0 ? (
                   <span className="text-xs text-green-600 font-medium">
-                    มีสินค้า {getTotalQuantity()} ชิ้น
+                    <span className="hidden sm:inline">มีสินค้า </span>{getTotalQuantity()}<span className="hidden lg:inline"> ชิ้น</span>
                   </span>
                 ) : (
                   <span className="text-xs text-red-500 font-medium">
-                    สินค้าหมด
+                    <span className="hidden sm:inline">สินค้า</span>หมด
                   </span>
                 )}
               </div>
@@ -177,25 +179,37 @@ const ProductCard = ({ product, className = "" }) => {
 
             {/* Available Sizes */}
             {getAvailableSizes().length > 0 && (
-              <div className="flex items-center space-x-2">
-                <span className="text-xs text-gray-600">ขนาด:</span>
-                <div className="flex space-x-1">
-                  {getAvailableSizes().slice(0, 4).map((size, index) => (
+              <div className="flex items-center space-x-1">
+                <span className="text-xs text-gray-600 flex-shrink-0">ขนาด:</span>
+                <div className="flex space-x-1 flex-wrap">
+                  {getAvailableSizes().slice(0, 2).map((size, index) => (
                     <span
                       key={index}
-                      className="text-xs bg-gray-100 px-2 py-1 rounded"
+                      className="text-xs bg-gray-100 px-1 sm:px-1.5 lg:px-2 py-0.5 lg:py-1 rounded"
                     >
                       {formatSizeForDisplay(size)}
                     </span>
                   ))}
-                  {getAvailableSizes().length > 4 && (
+                  {getAvailableSizes().length > 2 && (
                     <span className="text-xs text-gray-500">
-                      +{getAvailableSizes().length - 4}
+                      +{getAvailableSizes().length - 2}
                     </span>
                   )}
                 </div>
               </div>
             )}
+
+            {/* Mobile Add to Cart Button */}
+            <div className="block sm:hidden mt-2">
+              <Button
+                onClick={handleAddToCart}
+                size="sm"
+                className="w-full bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white font-semibold rounded-md shadow-md text-xs py-2 touch-manipulation"
+              >
+                <ShoppingCart className="w-3 h-3 mr-1" />
+                เพิ่มในตะกร้า
+              </Button>
+            </div>
           </div>
         </CardContent>
       </Card>

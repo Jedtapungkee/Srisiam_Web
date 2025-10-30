@@ -13,43 +13,43 @@ import {
 
 const MainFooter = () => {
   return (
-    <footer className="bg-gradient-to-br from-slate-700 via-slate-600 to-slate-700 text-white mt-12">
+    <footer className="bg-gradient-to-br from-slate-700 via-slate-600 to-slate-700 text-white mt-8 sm:mt-12">
       {/* Main Footer Content */}
-      <div className="container mx-auto px-4 py-12">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8">
           {/* Contact Info */}
           <div className="space-y-4">
-            <h3 className="text-xl font-bold text-blue-300 mb-6 flex items-center">
-              <Phone className="mr-2 h-5 w-5" />
+            <h3 className="text-lg sm:text-xl font-bold text-blue-300 mb-4 sm:mb-6 flex items-center">
+              <Phone className="mr-2 h-4 w-4 sm:h-5 sm:w-5" />
               ติดต่อเรา
             </h3>
             <div className="space-y-3">
               <div className="flex items-center space-x-3 hover:text-blue-200 transition-colors">
-                <Phone className="h-4 w-4 text-blue-300" />
-                <span className="font-medium">032-211-856</span>
+                <Phone className="h-4 w-4 text-blue-300 flex-shrink-0" />
+                <span className="font-medium text-sm sm:text-base">032-211-856</span>
               </div>
               <div className="flex items-center space-x-3 hover:text-blue-200 transition-colors">
-                <Mail className="h-4 w-4 text-blue-300" />
-                <span className="font-medium">info@srisiam.com</span>
+                <Mail className="h-4 w-4 text-blue-300 flex-shrink-0" />
+                <span className="font-medium text-sm sm:text-base">info@srisiam.com</span>
               </div>
               <div className="flex items-center space-x-3 hover:text-blue-200 transition-colors">
-                <MessageCircle className="h-4 w-4 text-green-400" />
-                <span className="font-medium">Line: @srisiam</span>
+                <MessageCircle className="h-4 w-4 text-green-400 flex-shrink-0" />
+                <span className="font-medium text-sm sm:text-base">Line: @srisiam</span>
               </div>
             </div>
           </div>
 
           {/* Address */}
           <div className="space-y-4">
-            <h3 className="text-xl font-bold text-blue-300 mb-6 flex items-center">
-              <MapPin className="mr-2 h-5 w-5" />
+            <h3 className="text-lg sm:text-xl font-bold text-blue-300 mb-4 sm:mb-6 flex items-center">
+              <MapPin className="mr-2 h-4 w-4 sm:h-5 sm:w-5" />
               ที่อยู่
             </h3>
             <div className="space-y-3">
               <div className="flex items-start space-x-3">
                 <MapPin className="h-4 w-4 text-blue-300 mt-1 flex-shrink-0" />
                 <div>
-                  <p className="font-medium leading-relaxed">
+                  <p className="font-medium leading-relaxed text-sm sm:text-base">
                     109 ถนนประชานิยม ตำบลบ้านโป่ง
                     <br />
                     อำเภอบ้านโป่ง จังหวัดราชบุรี
@@ -63,27 +63,27 @@ const MainFooter = () => {
 
           {/* Business Hours */}
           <div className="space-y-4">
-            <h3 className="text-xl font-bold text-blue-300 mb-6 flex items-center">
-              <Clock className="mr-2 h-5 w-5" />
+            <h3 className="text-lg sm:text-xl font-bold text-blue-300 mb-4 sm:mb-6 flex items-center">
+              <Clock className="mr-2 h-4 w-4 sm:h-5 sm:w-5" />
               เวลาทำการ
             </h3>
             <div className="space-y-3">
               <div className="flex items-center space-x-3">
-                <Clock className="h-4 w-4 text-blue-300" />
+                <Clock className="h-4 w-4 text-blue-300 flex-shrink-0" />
                 <div>
-                  <p className="font-medium">จันทร์ - เสาร์</p>
-                  <p className="text-blue-200">7:00 - 20:00น.</p>
+                  <p className="font-medium text-sm sm:text-base">จันทร์ - เสาร์</p>
+                  <p className="text-blue-200 text-sm">7:00 - 20:00น.</p>
                 </div>
               </div>
               <div className="flex items-center space-x-3">
-                <Clock className="h-4 w-4 text-red-300" />
+                <Clock className="h-4 w-4 text-red-300 flex-shrink-0" />
                 <div>
-                  <p className="font-medium">วันอาทิตย์</p>
-                  <p className="text-red-200">ปิดทำการ</p>
+                  <p className="font-medium text-sm sm:text-base">วันอาทิตย์</p>
+                  <p className="text-red-200 text-sm">ปิดทำการ</p>
                 </div>
               </div>
-              <div className="mt-4 p-3 rounded-lg  ">
-                <p className="text-sm text-white">
+              <div className="mt-4 p-3 rounded-lg bg-slate-600/50">
+                <p className="text-xs sm:text-sm text-white">
                   <span className="font-semibold">หมายเหตุ:</span>{" "}
                   รับออร์เดอร์ออนไลน์ 24/7
                 </p>
@@ -93,7 +93,7 @@ const MainFooter = () => {
 
           {/* Company & Social */}
           <div className="space-y-4">
-            <h3 className="text-xl font-bold text-blue-300 mb-6">
+            <h3 className="text-lg sm:text-xl font-bold text-blue-300 mb-4 sm:mb-6">
               เกี่ยวกับ Srisiam
             </h3>
             <div className="space-y-4">
@@ -104,25 +104,25 @@ const MainFooter = () => {
 
               {/* Social Media */}
               <div>
-                <h4 className="font-semibold text-gray-200 mb-3">ติดตามเรา</h4>
+                <h4 className="font-semibold text-gray-200 mb-3 text-sm sm:text-base">ติดตามเรา</h4>
                 <div className="flex space-x-3">
                   <a
                     href="#"
                     className="bg-blue-600 hover:bg-blue-700 p-2 rounded-full transition-colors"
                   >
-                    <Facebook className="h-5 w-5" />
+                    <Facebook className="h-4 w-4 sm:h-5 sm:w-5" />
                   </a>
                   <a
                     href="#"
                     className="bg-pink-600 hover:bg-pink-700 p-2 rounded-full transition-colors"
                   >
-                    <Instagram className="h-5 w-5" />
+                    <Instagram className="h-4 w-4 sm:h-5 sm:w-5" />
                   </a>
                   <a
                     href="#"
                     className="bg-green-600 hover:bg-green-700 p-2 rounded-full transition-colors"
                   >
-                    <MessageCircle className="h-5 w-5" />
+                    <MessageCircle className="h-4 w-4 sm:h-5 sm:w-5" />
                   </a>
                 </div>
               </div>
@@ -133,9 +133,9 @@ const MainFooter = () => {
 
       {/* Bottom Bar */}
       <div className="border-t border-slate-600 bg-slate-800/50">
-        <div className="container mx-auto px-4 py-6">
-          <div className="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
-            <div className="text-center md:text-left">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6">
+          <div className="flex flex-col sm:flex-row justify-between items-center space-y-3 sm:space-y-0">
+            <div className="text-center sm:text-left">
               <p className="text-gray-300 text-sm">
                 © 2025 Srisiam School Uniform Store. สงวนลิขสิทธิ์ทุกรูปแบบ
               </p>
@@ -144,7 +144,7 @@ const MainFooter = () => {
               </p>
             </div>
 
-            <div className="flex items-center space-x-4 text-sm text-gray-300">
+            <div className="flex items-center space-x-4 text-xs sm:text-sm text-gray-300">
               <a
                 href="/privacy"
                 className="hover:text-blue-200 transition-colors"

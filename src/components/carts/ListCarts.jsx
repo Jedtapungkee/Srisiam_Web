@@ -140,43 +140,131 @@ const ListCarts = () => {
   }
 
   return (
-    <div>
+    <div className="min-h-screen bg-gray-50">
       {/* Breadcrumb */}
-      <div className="flex items-center mb-6 bg-[#c3c5ee] p-4 rounded shadow-sm h-[100px]">
-        <Breadcrumb className="flex items-center space-x-2 ">
+      <div className="flex items-center mb-4 sm:mb-6 bg-[#c3c5ee] p-3 sm:p-4 rounded shadow-sm h-[80px] sm:h-[100px]">
+        <Breadcrumb className="flex items-center space-x-2">
           <BreadcrumbItem>
             <BreadcrumbLink href="/">
-              <h2 className="font-bold text-3xl">Srisiam</h2>
+              <h2 className="font-bold text-xl sm:text-2xl lg:text-3xl">Srisiam</h2>
             </BreadcrumbLink>
           </BreadcrumbItem>
           <BreadcrumbSeparator className="font-bold" />
           <BreadcrumbItem>
             <BreadcrumbPage>
-              <h2 className="text-2xl font-medium">ตะกร้าสินค้า</h2>
+              <h2 className="text-lg sm:text-xl lg:text-2xl font-medium">ตะกร้าสินค้า</h2>
             </BreadcrumbPage>
           </BreadcrumbItem>
         </Breadcrumb>
       </div>
-      {/* Header */}
-      <div className="flex items-center justify-between gap-2 mb-4">
-        <div className="flex items-center gap-2">
 
-        <ListCheck size={26} />
-        <p className="font-bold text-xl">
-          รายการสินค้าในตะกร้า {carts.length} รายการ
-        </p>
+      {/* Header */}
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 sm:gap-2 mb-4">
+        <div className="flex items-center gap-2">
+          <ListCheck size={24} className="sm:w-6 sm:h-6" />
+          <p className="font-bold text-lg sm:text-xl">
+            รายการสินค้าในตะกร้า {carts.length} รายการ
+          </p>
         </div>
         <div>
-            <button className="px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600 transition-colors" onClick={() => {
-                actionClearCart();
-                setSelectedItems(new Set());
-            }}>
-                ลบตะกร้าสินค้า
-            </button>
+          <button 
+            className="px-3 sm:px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600 transition-colors text-sm sm:text-base" 
+            onClick={() => {
+              actionClearCart();
+              setSelectedItems(new Set());
+            }}
+          >
+            ลบตะกร้าสินค้า
+          </button>
         </div>
       </div>
-      {/* Table Carts */}
-      <div>
+
+      {/* Mobile Card View */}
+      <div className="block lg:hidden space-y-4">
+        {carts.map((item) => (
+          <div key={getItemKey(item)} className="bg-white rounded-lg shadow-sm border p-4">
+            <div className="flex items-start space-x-3">
+              {/* Checkbox */}
+              <Checkbox
+                checked={selectedItems.has(getItemKey(item))}
+                onCheckedChange={() => handleItemSelect(item)}
+                className="mt-2"
+              />
+              
+              {/* Product Image */}
+              <div className="flex-shrink-0">
+                {item.images.length > 0 ? (
+                  <img
+                    src={item.images[0].url}
+                    alt={item.title}
+                    className="w-16 h-16 sm:w-20 sm:h-20 object-cover rounded-lg border shadow-sm"
+                  />
+                ) : (
+                  <div className="w-16 h-16 sm:w-20 sm:h-20 bg-muted rounded-lg flex items-center justify-center">
+                    <Package className="h-6 w-6 text-muted-foreground" />
+                  </div>
+                )}
+              </div>
+
+              {/* Product Info */}
+              <div className="flex-1 min-w-0">
+                <h3 className="font-medium text-sm sm:text-base text-gray-900 line-clamp-2">
+                  {item.title}
+                </h3>
+                <p className="text-xs sm:text-sm text-gray-500 mt-1">
+                  ไซส์: {formatSizeForDisplay(item.sizeData.size)}
+                </p>
+                <p className="text-sm sm:text-base font-semibold text-gray-900 mt-1">
+                  ฿{item.sizeData.price}
+                </p>
+                
+                {/* Quantity Controls */}
+                <div className="flex items-center justify-between mt-3">
+                  <div className="flex items-center space-x-2">
+                    <button
+                      className="w-8 h-8 border border-gray-300 rounded-md flex items-center justify-center hover:bg-gray-50"
+                      onClick={() =>
+                        actionUpdateCartItemCount(
+                          item.id,
+                          item.sizeData,
+                          item.count - 1
+                        )
+                      }
+                    >
+                      <Minus size={14} />
+                    </button>
+                    <span className="px-2 py-1 text-sm font-medium">{item.count}</span>
+                    <button
+                      className="w-8 h-8 border border-gray-300 rounded-md flex items-center justify-center hover:bg-gray-50"
+                      onClick={() =>
+                        actionUpdateCartItemCount(
+                          item.id,
+                          item.sizeData,
+                          item.count + 1
+                        )
+                      }
+                    >
+                      <Plus size={14} />
+                    </button>
+                  </div>
+                  
+                  <div className="flex items-center space-x-3">
+                    <span className="text-red-500 font-bold text-sm sm:text-base">
+                      ฿{item.sizeData.price * item.count}
+                    </span>
+                    <button onClick={() => removeCart(item.id, item.sizeData)}>
+                      <Trash2 className="text-red-500 w-5 h-5" />
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      {/* Desktop Table View */}
+      <div className="hidden lg:block">
         <Table className="shadow-sm bg-gray-100 rounded-md">
           <TableHeader>
             <TableRow>
@@ -263,22 +351,25 @@ const ListCarts = () => {
           </TableBody>
         </Table>
       </div>
-      <div className="flex justify-between items-center space-x-2 mt-8 pl-10  bg-gray-100 p-8 rounded-md shadow-sm">
+
+      {/* Summary Footer */}
+      <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center space-y-4 lg:space-y-0 lg:space-x-2 mt-6 lg:mt-8 p-4 lg:pl-10 lg:p-8 bg-white lg:bg-gray-100 rounded-md shadow-sm">
         <div className="flex items-center space-x-2">
           <Checkbox checked={selectAll} onCheckedChange={handleSelectAll} />
-          <p>เลือกทั้งหมด ({carts.length})</p>
+          <p className="text-sm sm:text-base">เลือกทั้งหมด ({carts.length})</p>
         </div>
-        <div className="flex items-center space-x-4">
-          <p>เลือก ({getSelectedCount()} ชิ้น)</p>
-          <div className="text-2xl font-bold text-red-500">
+        
+        <div className="flex flex-col sm:flex-row items-start sm:items-center space-y-2 sm:space-y-0 sm:space-x-4 w-full lg:w-auto">
+          <p className="text-sm sm:text-base">เลือก ({getSelectedCount()} ชิ้น)</p>
+          <div className="text-xl sm:text-2xl font-bold text-red-500">
             ฿ {calculateSelectedTotal().toLocaleString()}
           </div>
-          <div className="text-sm text-gray-500">
+          <div className="text-xs sm:text-sm text-gray-500">
             จากทั้งหมด ฿ {getTotalPrice().toLocaleString()}
           </div>
           {user ? (
             <button
-              className={`px-6 py-2 rounded-md mt-2 ${
+              className={`w-full sm:w-auto px-4 sm:px-6 py-2 rounded-md mt-2 text-sm sm:text-base ${
                 getSelectedCount() > 0
                   ? "bg-[#00204E] text-white hover:bg-[#033479]"
                   : "bg-gray-300 text-gray-500 cursor-not-allowed"
@@ -289,10 +380,8 @@ const ListCarts = () => {
               ชำระเงิน
             </button>
           ) : (
-            <Link 
-              to="/login"
-            >
-              <button className="px-6 py-2 rounded-md mt-2 bg-blue-600 text-white hover:bg-blue-700 relative z-10">
+            <Link to="/auth/login" className="w-full sm:w-auto">
+              <button className="w-full px-4 sm:px-6 py-2 rounded-md mt-2 bg-blue-600 text-white hover:bg-blue-700 relative z-10 text-sm sm:text-base">
                 เข้าสู่ระบบ
               </button>
             </Link>

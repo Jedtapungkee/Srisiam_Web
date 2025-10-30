@@ -85,15 +85,15 @@ const Dashboard = () => {
     : 0;
 
   return (
-    <div className="p-6 space-y-6 bg-gray-50/50 min-h-screen">
+    <div className="p-4 sm:p-6 space-y-4 sm:space-y-6 bg-gray-50/50 min-h-screen">
       {/* Header */}
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold text-gray-900 mb-2">แดชบอร์ด</h1>
-        <p className="text-gray-600">ภาพรวมการดำเนินงานของร้านค้า</p>
+      <div className="mb-6 sm:mb-8">
+        <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-2">แดชบอร์ด</h1>
+        <p className="text-gray-600 text-sm sm:text-base">ภาพรวมการดำเนินงานของร้านค้า</p>
       </div>
 
       {/* Stats Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 mb-6 sm:mb-8">
         <StatCard
           title="สินค้าทั้งหมด"
           value={overview.totalProducts?.toLocaleString() || '0'}
@@ -133,7 +133,7 @@ const Dashboard = () => {
       </div>
 
       {/* Secondary Stats */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 mb-6 sm:mb-8">
         <StatCard
           title="กำลังดำเนินการ"
           value={overview.processingOrders?.toLocaleString() || '0'}
@@ -172,9 +172,9 @@ const Dashboard = () => {
       </div>
 
       {/* Charts and Details */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Sales Chart - Takes 2 columns */}
-        <div className="lg:col-span-2">
+      <div className="grid grid-cols-1 xl:grid-cols-3 gap-4 sm:gap-6">
+        {/* Sales Chart - Takes full width on mobile, 2 columns on xl */}
+        <div className="xl:col-span-2">
           <SalesChart
             data={salesData}
             loading={salesLoading}
@@ -183,8 +183,8 @@ const Dashboard = () => {
           />
         </div>
         
-        {/* Top Products */}
-        <div className="lg:col-span-1">
+        {/* Top Products - Stacks on mobile */}
+        <div className="xl:col-span-1">
           <TopProducts
             products={dashboardData.topProducts}
             loading={loading}
@@ -192,8 +192,8 @@ const Dashboard = () => {
         </div>
       </div>
 
-      {/* Recent Orders */}
-      <div className="grid grid-cols-1">
+      {/* Recent Orders - Full width */}
+      <div className="grid grid-cols-1 mt-4 sm:mt-6">
         <RecentOrders
           orders={dashboardData.recentOrders}
           loading={loading}

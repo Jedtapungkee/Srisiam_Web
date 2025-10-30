@@ -27,6 +27,7 @@ import { Minus, Plus, ShoppingCart } from "lucide-react";
 import useSrisiamStore from "../store/Srisiam-store";
 import { toast } from "sonner";
 import { createUserCart } from "../api/User";
+import AddToCartDialog from "../components/shop/AddToCartDialog";
 
 const ProductDetails = () => {
   const { id } = useParams();
@@ -39,6 +40,7 @@ const ProductDetails = () => {
   const token = useSrisiamStore((state) => state.token);
 
   const [count, setCount] = useState(1);
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
   const navigate = useNavigate();
 
   const fetchProductDetails = async (id) => {
@@ -64,7 +66,7 @@ const ProductDetails = () => {
     }
     setSelectedSizes(initialSizes);
   }, [product]);
-
+  
   const handleSizeChange = (productId, size) => {
     setSelectedSizes((prev) => ({
       ...prev,
@@ -101,17 +103,16 @@ const ProductDetails = () => {
       count: count,
     };
     // console.log(cartItem);
-    if(!token){
+    if (!token) {
       toast.error("กรุณาเข้าสู่ระบบเพื่อทำการสั่งซื้อ");
       navigate("/auth/login");
-      return
+      return;
     }
     try {
       // ส่งเป็น array ที่มี 1 item
       await createUserCart(token, { cart: [cartItem] });
       toast.success("เพิ่มสินค้าลงตะกร้าแล้ว");
       navigate("/checkout");
-
     } catch (error) {
       console.error(error);
       toast.error(error?.response?.data?.message || "บันทึกตะกร้าไม่สำเร็จ");
@@ -131,31 +132,41 @@ const ProductDetails = () => {
   }
 
   return (
-    <div>
+    <div className="min-h-screen bg-gray-50">
+      {/* Add to Cart Dialog */}
+      <AddToCartDialog
+        product={product}
+        open={isDialogOpen}
+        onOpenChange={setIsDialogOpen}
+      />
       {/* Breadcrumb Navigation */}
-      <div className="flex items-center mb-6 bg-[#c3c5ee] p-4 rounded shadow-sm h-[100px]">
-        <Breadcrumb className="flex items-center space-x-2 ">
+      <div className="flex items-center mb-4 sm:mb-6 bg-[#c3c5ee] p-3 sm:p-4 rounded shadow-sm h-[80px] sm:h-[100px]">
+        <Breadcrumb className="flex items-center space-x-2">
           <BreadcrumbItem>
             <BreadcrumbLink href="/">
-              <h2 className="font-bold text-3xl">Srisiam</h2>
+              <h2 className="font-bold text-xl sm:text-2xl lg:text-3xl">
+                Srisiam
+              </h2>
             </BreadcrumbLink>
           </BreadcrumbItem>
           <BreadcrumbSeparator className="font-bold" />
           <BreadcrumbItem>
             <BreadcrumbPage>
-              <h2 className="text-2xl font-medium">{product.title}</h2>
+              <h2 className="text-sm sm:text-lg lg:text-2xl font-medium line-clamp-1">
+                {product.title}
+              </h2>
             </BreadcrumbPage>
           </BreadcrumbItem>
         </Breadcrumb>
       </div>
-      <div className="container mx-auto p-4 max-w-6xl">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+      <div className="container mx-auto px-3 sm:px-4 lg:px-6 max-w-6xl">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-8">
           {/* ฝั่งซ้าย - รูปภาพ */}
-          <div className="space-y-4">
+          <div className="space-y-3 sm:space-y-4">
             {product.images && product.images.length > 0 ? (
               <>
                 {/* Swiper รูปภาพหลัก */}
-                <div className="px-10 py-10">
+                <div className="px-4 py-4 sm:px-6 sm:py-6 lg:px-10 lg:py-10">
                   <Swiper
                     modules={[Navigation, Thumbs]}
                     thumbs={{
@@ -180,12 +191,12 @@ const ProductDetails = () => {
 
                 {/* Swiper รูปภาพย่อย (Thumbnails) */}
                 {product.images.length > 1 && (
-                  <div className="px-10">
+                  <div className="px-4 sm:px-6 lg:px-10">
                     <Swiper
                       modules={[FreeMode, Navigation, Thumbs]}
                       onSwiper={setThumbsSwiper}
-                      spaceBetween={10}
-                      slidesPerView={4}
+                      spaceBetween={8}
+                      slidesPerView={3}
                       freeMode={true}
                       watchSlidesProgress={true}
                       navigation={{
@@ -194,9 +205,11 @@ const ProductDetails = () => {
                       breakpoints={{
                         480: {
                           slidesPerView: 3,
+                          spaceBetween: 10,
                         },
                         640: {
                           slidesPerView: 4,
+                          spaceBetween: 10,
                         },
                       }}
                       className="thumbs-swiper product-thumbs-swiper"
@@ -217,29 +230,33 @@ const ProductDetails = () => {
                 )}
               </>
             ) : (
-              <div className="px-10 py-10">
+              <div className="px-4 py-4 sm:px-6 sm:py-6 lg:px-10 lg:py-10">
                 <div className="aspect-square bg-gray-200 flex items-center justify-center rounded-lg shadow-md">
-                  <span className="text-gray-500">ไม่มีรูปภาพ</span>
+                  <span className="text-gray-500 text-sm sm:text-base">
+                    ไม่มีรูปภาพ
+                  </span>
                 </div>
               </div>
             )}
           </div>
 
           {/* ฝั่งขวา - ข้อมูลสินค้า */}
-          <div className="space-y-6">
+          <div className="space-y-4 sm:space-y-6 bg-white p-4 sm:p-6 rounded-lg shadow-sm">
             <div>
-              <h1 className="text-3xl font-bold text-gray-900 mb-2">
+              <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-900 mb-2 line-clamp-2">
                 {product.title}
               </h1>
-              <p className="text-2xl font-semibold text-red-600">
+              <p className="text-xl sm:text-2xl font-semibold text-red-600">
                 ฿{sizeData.price?.toLocaleString()}
               </p>
             </div>
 
             {product.description && (
               <div>
-                <h3 className="text-lg font-semibold mb-2">รายละเอียดสินค้า</h3>
-                <p className="text-gray-700 leading-relaxed">
+                <h3 className="text-base sm:text-lg font-semibold mb-2">
+                  รายละเอียดสินค้า
+                </h3>
+                <p className="text-sm sm:text-base text-gray-700 leading-relaxed">
                   {product.description}
                 </p>
               </div>
@@ -248,12 +265,14 @@ const ProductDetails = () => {
             {/* ขนาดสินค้า */}
             {product.productsizes && product.productsizes.length > 0 ? (
               <div>
-                <h3 className="text-lg font-semibold mb-2">เลือกขนาด</h3>
+                <h3 className="text-base sm:text-lg font-semibold mb-2">
+                  เลือกขนาด
+                </h3>
                 <Select
                   value={selectedSizes[product.id] || ""}
                   onValueChange={(value) => handleSizeChange(product.id, value)}
                 >
-                  <SelectTrigger className="w-24">
+                  <SelectTrigger className="w-full sm:w-32 h-10 sm:h-11">
                     <SelectValue>
                       {selectedSizes[product.id]
                         ? formatSizeForDisplay(selectedSizes[product.id])
@@ -264,7 +283,7 @@ const ProductDetails = () => {
                     {product.productsizes.map((item) => (
                       <SelectItem key={item.size} value={item.size}>
                         {formatSizeForDisplay(item.size)}{" "}
-                        <span className="text-sm text-gray-500">
+                        <span className="text-xs sm:text-sm text-gray-500">
                           (คงเหลือ: {item.quantity})
                         </span>
                       </SelectItem>
@@ -273,39 +292,44 @@ const ProductDetails = () => {
                 </Select>
               </div>
             ) : (
-              <div className="text-gray-500">ไม่มีขนาดให้เลือก</div>
+              <div className="text-gray-500 text-sm sm:text-base">
+                ไม่มีขนาดให้เลือก
+              </div>
             )}
 
             {/* จำนวน */}
             <div>
-              <h3 className="text-lg font-semibold mb-3">จำนวน</h3>
+              <h3 className="text-base sm:text-lg font-semibold mb-3">จำนวน</h3>
               <div className="flex items-center space-x-3">
                 <button
-                  className="w-10 h-10 border border-gray-300 rounded-md flex items-center justify-center hover:bg-gray-50"
+                  className="w-10 h-10 sm:w-12 sm:h-12 border border-gray-300 rounded-md flex items-center justify-center hover:bg-gray-50 active:bg-gray-100 transition-colors touch-manipulation"
                   onClick={() => setCount(count > 1 ? count - 1 : 1)}
                 >
-                  <Minus size={16} />
+                  <Minus size={16} className="sm:w-5 sm:h-5" />
                 </button>
-                <span className="px-2 py-1">{count}</span>
+                <span className="px-3 py-2 text-base sm:text-lg font-medium min-w-[50px] text-center">
+                  {count}
+                </span>
                 <button
-                  className="w-10 h-10 border border-gray-300 rounded-md flex items-center justify-center hover:bg-gray-50"
+                  className="w-10 h-10 sm:w-12 sm:h-12 border border-gray-300 rounded-md flex items-center justify-center hover:bg-gray-50 active:bg-gray-100 transition-colors touch-manipulation"
                   onClick={() => setCount(count + 1)}
                 >
-                  <Plus size={16} />
+                  <Plus size={16} className="sm:w-5 sm:h-5" />
                 </button>
               </div>
             </div>
 
             {/* ปุ่มเพิ่มลงตะกร้า */}
-            <div className=" flex flex-col md:flex-row  gap-4 pt-4">
+            <div className="flex flex-col gap-3 sm:gap-4 pt-4">
               <button
-                className=" flex gap-2 text-center w-full bg-[#C0C1D6] border-[#050B72] border-1 text-[#050B72] py-3 px-6 rounded-md font-semibold hover:bg-[#050B72] hover:text-white transition-colors "
-                onClick={() => actionAddtoCart(product, count, sizeData)}
+                className="flex items-center justify-center gap-2 w-full bg-[#C0C1D6] border border-[#050B72] text-[#050B72] py-3 px-4 sm:px-6 rounded-md font-semibold hover:bg-[#050B72] hover:text-white transition-colors text-sm sm:text-base touch-manipulation"
+                onClick={() => setIsDialogOpen(true)}
               >
-                <ShoppingCart className="h-5 w-5" /> เพิ่มลงตะกร้าสินค้า
+                <ShoppingCart className="h-4 w-4 sm:h-5 sm:w-5" />{" "}
+                เพิ่มลงตะกร้าสินค้า
               </button>
               <button
-                className="w-full bg-[#00204E] text-white py-3 px-6 rounded-lg font-semibold hover:bg-gray-800 transition-colors"
+                className="w-full bg-[#00204E] text-white py-3 px-4 sm:px-6 rounded-lg font-semibold hover:bg-gray-800 transition-colors text-sm sm:text-base touch-manipulation"
                 onClick={handleBuynow}
               >
                 ซื้อทันที

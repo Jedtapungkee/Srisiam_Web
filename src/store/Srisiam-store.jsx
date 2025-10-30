@@ -40,7 +40,7 @@ const SrisiamStore = (set, get) => ({
     }
 
     set({ carts: updatedCarts });
-    console.log("add to cart", updatedCarts);
+    // console.log("add to cart", updatedCarts);
   },
 
   // อัพเดทจำนวนสินค้าในตะกร้า

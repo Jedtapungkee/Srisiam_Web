@@ -46,6 +46,41 @@ const Shop = () => {
   }, [getProduct]);
 
   /**
+   * Handle body scroll when filter is open on mobile
+   */
+  useEffect(() => {
+    if (isFilterOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'unset';
+    }
+
+    // Cleanup on unmount
+    return () => {
+      document.body.style.overflow = 'unset';
+    };
+  }, [isFilterOpen]);
+
+  /**
+   * Handle ESC key to close filter
+   */
+  useEffect(() => {
+    const handleEscape = (e) => {
+      if (e.key === 'Escape' && isFilterOpen) {
+        setIsFilterOpen(false);
+      }
+    };
+
+    if (isFilterOpen) {
+      document.addEventListener('keydown', handleEscape);
+    }
+
+    return () => {
+      document.removeEventListener('keydown', handleEscape);
+    };
+  }, [isFilterOpen]);
+
+  /**
    * Handle URL parameters (for category and search from navbar)
    */
   useEffect(() => {
@@ -149,14 +184,15 @@ const Shop = () => {
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
       <div className="bg-white border-b">
-        <div className="container mx-auto px-4 py-6">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6">
           <div className="flex items-center justify-between mb-4">
-            <h1 className="text-3xl font-bold text-gray-900">ร้านค้า</h1>
+            <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">ร้านค้า</h1>
             
             {/* Mobile Filter Button */}
             <Button
               onClick={toggleFilter}
               variant="outline"
+              size="sm"
               className="lg:hidden"
             >
               <Filter className="h-4 w-4 mr-2" />
@@ -167,27 +203,40 @@ const Shop = () => {
       </div>
 
       {/* Main Content */}
-      <div className="container mx-auto px-4 py-8">
-        <div className="flex gap-6">
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6 lg:py-8">
+        <div className="flex gap-4 lg:gap-6">
+          {/* Mobile Filter Backdrop */}
+          {isFilterOpen && (
+            <div 
+              className="fixed inset-0 bg-black/50 z-40 lg:hidden"
+              onClick={toggleFilter}
+            />
+          )}
+
           {/* Filter Sidebar */}
           <aside
             className={cn(
               'lg:block lg:w-64 flex-shrink-0',
-              'fixed lg:relative inset-0 z-50 lg:z-auto',
+              'fixed lg:relative inset-y-0 left-0 z-50 lg:z-auto w-80 lg:w-64',
               'bg-white lg:bg-transparent',
-              isFilterOpen ? 'block' : 'hidden'
+              'transform transition-transform duration-300 ease-in-out lg:transform-none',
+              isFilterOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0',
+              !isFilterOpen && 'lg:block hidden'
             )}
           >
-            <div className="lg:sticky lg:top-4 h-full lg:h-auto overflow-y-auto">
+            <div className="h-full lg:h-auto overflow-y-auto lg:sticky lg:top-4">
               {/* Mobile Filter Header */}
-              <div className="lg:hidden flex items-center justify-between p-4 border-b">
+              <div className="lg:hidden flex items-center justify-between p-4 border-b bg-white sticky top-0 z-10">
                 <h2 className="text-lg font-semibold">ตัวกรอง</h2>
-                <button onClick={toggleFilter}>
+                <button 
+                  onClick={toggleFilter}
+                  className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+                >
                   <X className="h-6 w-6" />
                 </button>
               </div>
 
-              <div className="p-4 lg:p-0 space-y-6">
+              <div className="p-4 lg:p-0 space-y-4 lg:space-y-6">
                 {/* Category Filter */}
                 <div className="bg-white rounded-lg p-4 shadow-sm">
                   <h3 className="text-sm font-semibold text-gray-900 mb-4">
@@ -224,22 +273,25 @@ const Shop = () => {
                     ล้างตัวกรองทั้งหมด
                   </Button>
                 )}
+
+                {/* Mobile Close Button */}
+                <div className="lg:hidden pt-4 border-t">
+                  <Button
+                    onClick={toggleFilter}
+                    variant="outline"
+                    className="w-full"
+                  >
+                    ปิดตัวกรอง
+                  </Button>
+                </div>
               </div>
             </div>
-
-            {/* Mobile Overlay */}
-            {isFilterOpen && (
-              <div
-                className="lg:hidden fixed inset-0 bg-black bg-opacity-50 -z-10"
-                onClick={toggleFilter}
-              />
-            )}
           </aside>
 
           {/* Products Grid */}
-          <main className="flex-1">
+          <main className="flex-1 min-w-0">
             {/* Toolbar */}
-            <div className="flex items-center justify-between mb-6">
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-4 lg:mb-6 gap-4">
               <p className="text-sm text-gray-600">
                 {isLoading ? (
                   'กำลังโหลด...'
@@ -260,7 +312,7 @@ const Shop = () => {
                 <select
                   value={sortBy}
                   onChange={(e) => setSortBy(e.target.value)}
-                  className="px-4 py-2 border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#001F3F]"
+                  className="px-3 sm:px-4 py-2 border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#001F3F] bg-white min-w-0 flex-shrink-0"
                 >
                   <option value="newest">ใหม่ล่าสุด</option>
                   <option value="price-low">ราคา: ต่ำ-สูง</option>
@@ -282,12 +334,12 @@ const Shop = () => {
             )}
 
             {isLoading ? (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {[...Array(6)].map((_, i) => (
-                  <div key={i} className="bg-white rounded-lg p-4 animate-pulse">
-                    <div className="aspect-square bg-gray-200 rounded-lg mb-4" />
-                    <div className="h-4 bg-gray-200 rounded mb-2" />
-                    <div className="h-4 bg-gray-200 rounded w-2/3" />
+              <div className="grid gap-3 sm:gap-4 md:gap-6 grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+                {[...Array(8)].map((_, i) => (
+                  <div key={i} className="bg-white rounded-lg p-3 sm:p-4 animate-pulse">
+                    <div className="aspect-square bg-gray-200 rounded-lg mb-3 sm:mb-4" />
+                    <div className="h-3 sm:h-4 bg-gray-200 rounded mb-2" />
+                    <div className="h-3 sm:h-4 bg-gray-200 rounded w-2/3" />
                   </div>
                 ))}
               </div>

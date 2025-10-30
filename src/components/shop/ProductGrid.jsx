@@ -60,14 +60,14 @@ const ProductGrid = ({
     <div className={`space-y-6 ${className}`}>
       {/* Products Grid/List */}
       {isLoading ? (
-        <div className={`grid gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4`}>
+        <div className={`grid gap-3 sm:gap-4 md:gap-6 grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4`}>
           {[...Array(12)].map((_, index) => (
             <ProductSkeleton key={index} />
           ))}
         </div>
       ) : products.length === 0 ? (
         // Empty State
-        <div className="flex flex-col items-center justify-center py-16 text-center">
+        <div className="flex flex-col items-center justify-center py-16 text-center px-4">
           <Package className="w-16 h-16 text-gray-400 mb-4" />
           <h3 className="text-xl font-bold text-gray-800 mb-2">ไม่พบสินค้า</h3>
           <p className="text-gray-600 mb-4">
@@ -77,7 +77,7 @@ const ProductGrid = ({
       ) : (
         <>
           {/* Products Grid */}
-          <div className={`grid gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4`}>
+          <div className={`grid gap-3 sm:gap-4 md:gap-6 grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4`}>
             {products.map((product) => (
               <ProductCard
                 key={product.id}

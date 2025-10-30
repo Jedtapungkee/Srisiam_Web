@@ -3,8 +3,8 @@ import { Outlet } from 'react-router-dom'
 
 const LayoutAuth = () => {
   return (
-    <div className='flex h-screen'>
-        <main className='flex-1'>
+    <div className="min-h-screen bg-gray-50">
+        <main className='w-full h-full overflow-hidden'>
           <Outlet />
         </main>
     </div>
