@@ -125,7 +125,7 @@ const FormEditProduct = ({ productId, open, setOpen }) => {
         images: validImages,
       };
 
-      console.log("Sending update data:", formData);
+      // console.log("Sending update data:", formData);
       const res = await updateProduct(token, productId, formData);
       toast.success(`แก้ไขสินค้า ${res.data.title} เรียบร้อยแล้ว`);
 
@@ -140,6 +140,8 @@ const FormEditProduct = ({ productId, open, setOpen }) => {
     }
   };
 
+  
+
   const addProductSize = () => {
     setProductSizes([...productSizes, { size: "", price: "", quantity: "" }]);
   };
@@ -148,9 +150,13 @@ const FormEditProduct = ({ productId, open, setOpen }) => {
     setProductSizes(productSizes.filter((_, i) => i !== index));
   };
 
-  const updateProductSize = (index, field, value) => {
+    const updateProductSize = (index, field, value) => {
     const updated = [...productSizes];
-    updated[index][field] = value;
+    if (field === "size") {
+      updated[index][field] = value.toUpperCase();
+    } else {
+      updated[index][field] = value;
+    }
     setProductSizes(updated);
   };
 
